@@ -311,8 +311,6 @@
 
 <script>
 
-let previousScrollPosition = 0;
-
 function calculate(type, value, special = false) {
 
     if (value === "" || value === null) {
@@ -390,20 +388,11 @@ function calculate(type, value, special = false) {
 
 function updateAll() {
 
-    const morning =
-        document.getElementById("morning").value;
-
-    const lunch =
-        document.getElementById("lunch").value;
-
-    const threeHours =
-        document.getElementById("threeHours").value;
-
-    const dinner =
-        document.getElementById("dinner").value;
-
-    const bedtime =
-        document.getElementById("bedtime").value;
+    const morning = document.getElementById("morning").value;
+    const lunch = document.getElementById("lunch").value;
+    const threeHours = document.getElementById("threeHours").value;
+    const dinner = document.getElementById("dinner").value;
+    const bedtime = document.getElementById("bedtime").value;
 
     const lunchSpecial =
         document.getElementById("lunchSpecial").checked;
@@ -452,13 +441,26 @@ function updateAll() {
 }
 
 
-/* 各項目の「入力内容を確認」ボタン */
+/* =========================
+   入力内容の確認
+   ========================= */
 
 document.querySelectorAll(".confirm-button").forEach(function(button) {
 
     button.addEventListener("click", function() {
 
-        previousScrollPosition = window.scrollY;
+        const confirmation =
+            document.getElementById("confirmation");
+
+        /*
+         * 押した確認ボタンの直後へ
+         * 確認画面を移動する
+         */
+        button.parentNode.insertBefore(
+            confirmation,
+            button.nextSibling
+        );
+
 
         const morning =
             document.getElementById("morning").value;
@@ -484,25 +486,31 @@ document.querySelectorAll(".confirm-button").forEach(function(button) {
 
         let text = "";
 
+
         text += '<div class="confirmation-line">朝：' +
             (morning === "" ? "未入力" : morning + " mg/dL") +
             '</div>';
+
 
         text += '<div class="confirmation-line">昼：' +
             (lunch === "" ? "未入力" : lunch + " mg/dL") +
             (lunchSpecial ? "（外食・丼・揚げ物）" : "") +
             '</div>';
 
+
         text += '<div class="confirmation-line">3時間後：' +
             (threeHours === "" ? "未入力" : threeHours + " mg/dL") +
             '</div>';
 
+
         text += '<div class="confirmation-line">18時：トレシーバ 7単位</div>';
+
 
         text += '<div class="confirmation-line">夜：' +
             (dinner === "" ? "未入力" : dinner + " mg/dL") +
             (dinnerSpecial ? "（外食・丼・揚げ物）" : "") +
             '</div>';
+
 
         text += '<div class="confirmation-line">就寝前：' +
             (bedtime === "" ? "未入力" : bedtime + " mg/dL") +
@@ -511,10 +519,12 @@ document.querySelectorAll(".confirm-button").forEach(function(button) {
 
         document.getElementById("confirmationText").innerHTML = text;
 
-        document.getElementById("confirmation").style.display = "block";
+        confirmation.style.display = "block";
 
-        document.getElementById("confirmation").scrollIntoView({
-            behavior: "smooth"
+
+        confirmation.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
         });
 
     });
@@ -522,7 +532,9 @@ document.querySelectorAll(".confirm-button").forEach(function(button) {
 });
 
 
-/* 戻って修正する */
+/* =========================
+   戻って修正する
+   ========================= */
 
 document.getElementById("backButton").addEventListener("click", function() {
 
@@ -531,18 +543,15 @@ document.getElementById("backButton").addEventListener("click", function() {
 });
 
 
-/* この内容で判定する */
+/* =========================
+   この内容で判定する
+   ========================= */
 
 document.getElementById("calculateButton").addEventListener("click", function() {
 
     updateAll();
 
     document.getElementById("confirmation").style.display = "none";
-
-    window.scrollTo({
-        top: previousScrollPosition,
-        behavior: "instant"
-    });
 
 });
 
