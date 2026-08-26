@@ -391,6 +391,7 @@ function calculate(type, value, special = false) {
 }
 
 
+```javascript
 function updateAll() {
 
     const morning =
@@ -415,21 +416,47 @@ function updateAll() {
         document.getElementById("dinnerSpecial").checked;
 
 
-    document.getElementById("morningResult").textContent =
+    const morningResult =
+        document.getElementById("morningResult");
+
+    const lunchResult =
+        document.getElementById("lunchResult");
+
+    const threeHoursResult =
+        document.getElementById("threeHoursResult");
+
+    const dinnerResult =
+        document.getElementById("dinnerResult");
+
+    const bedtimeResult =
+        document.getElementById("bedtimeResult");
+
+
+    morningResult.textContent =
         calculate("morning", morning);
 
-    document.getElementById("lunchResult").textContent =
+    lunchResult.textContent =
         calculate("lunch", lunch, lunchSpecial);
 
-    document.getElementById("threeHoursResult").textContent =
+    threeHoursResult.textContent =
         calculate("threeHours", threeHours);
 
-    document.getElementById("dinnerResult").textContent =
+    dinnerResult.textContent =
         calculate("dinner", dinner, dinnerSpecial);
 
-    document.getElementById("bedtimeResult").textContent =
+    bedtimeResult.textContent =
         calculate("bedtime", bedtime);
+
+
+    /* 判定後だけ結果を表示 */
+
+    morningResult.style.display = "block";
+    lunchResult.style.display = "block";
+    threeHoursResult.style.display = "block";
+    dinnerResult.style.display = "block";
+    bedtimeResult.style.display = "block";
 }
+```
 
 
 /* 各項目の「入力内容を確認」ボタン */
