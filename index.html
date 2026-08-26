@@ -644,13 +644,13 @@ document.getElementById("backButton").addEventListener("click", function() {
    この内容で判定する
    ========================= */
 
-document.getElementById("calculateButton").addEventListener("click", function() {
+document.getElementById("calculateButton").onclick = function() {
 
     updateAll();
 
     document.getElementById("confirmation").style.display = "none";
 
-});
+};
 /* =========================
    入力内容を日付ごとに保存
    ========================= */
