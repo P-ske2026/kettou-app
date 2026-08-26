@@ -4,7 +4,62 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>血糖管理</title>
+.confirm-button {
+    width: 100%;
+    height: 70px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 12px;
+    background: #333;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+}
 
+.confirmation {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    margin-top: 18px;
+    box-shadow: 0 2px 7px rgba(0,0,0,0.10);
+}
+
+.confirmation-title {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.confirmation-line {
+    font-size: 22px;
+    padding: 10px 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+.calculate-button {
+    width: 100%;
+    height: 65px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 12px;
+    background: #333;
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.back-button {
+    width: 100%;
+    height: 60px;
+    margin-top: 12px;
+    border: 2px solid #888;
+    border-radius: 12px;
+    background: white;
+    color: #222;
+    font-size: 23px;
+    font-weight: bold;
+}
 <style>
     * {
         box-sizing: border-box;
@@ -211,8 +266,30 @@
     </div>
 
     <div class="notice">
-        ※血糖値を入力するとインスリン量が表示されます
+    ※入力後、「入力内容を確認」を押してください
+</div>
+
+<button id="confirmButton" class="confirm-button">
+    入力内容を確認
+</button>
+
+<div id="confirmation" class="confirmation" style="display:none;">
+
+    <div class="confirmation-title">
+        入力内容の確認
     </div>
+
+    <div id="confirmationText"></div>
+
+    <button id="calculateButton" class="calculate-button">
+        この内容で判定する
+    </button>
+
+    <button id="backButton" class="back-button">
+        戻って修正する
+    </button>
+
+</div>
 
 </div>
 
@@ -342,7 +419,66 @@ document.querySelectorAll("input").forEach(function(input) {
     input.addEventListener("change", updateAll);
 
 });
+document.getElementById("confirmButton").addEventListener("click", function() {
 
+    const morning = document.getElementById("morning").value;
+    const lunch = document.getElementById("lunch").value;
+    const threeHours = document.getElementById("threeHours").value;
+    const dinner = document.getElementById("dinner").value;
+    const bedtime = document.getElementById("bedtime").value;
+
+    const lunchSpecial = document.getElementById("lunchSpecial").checked;
+    const dinnerSpecial = document.getElementById("dinnerSpecial").checked;
+
+    let text = "";
+
+    text += '<div class="confirmation-line">朝：' +
+        (morning === "" ? "未入力" : morning + " mg/dL") + '</div>';
+
+    text += '<div class="confirmation-line">昼：' +
+        (lunch === "" ? "未入力" : lunch + " mg/dL") +
+        (lunchSpecial ? "（外食・丼・揚げ物）" : "") + '</div>';
+
+    text += '<div class="confirmation-line">3時間後：' +
+        (threeHours === "" ? "未入力" : threeHours + " mg/dL") + '</div>';
+
+    text += '<div class="confirmation-line">18時：トレシーバ 7単位</div>';
+
+    text += '<div class="confirmation-line">夜：' +
+        (dinner === "" ? "未入力" : dinner + " mg/dL") +
+        (dinnerSpecial ? "（外食・丼・揚げ物）" : "") + '</div>';
+
+    text += '<div class="confirmation-line">就寝前：' +
+        (bedtime === "" ? "未入力" : bedtime + " mg/dL") + '</div>';
+
+    document.getElementById("confirmationText").innerHTML = text;
+
+    document.getElementById("confirmation").style.display = "block";
+
+    document.getElementById("confirmation").scrollIntoView({
+        behavior: "smooth"
+    });
+});
+
+
+document.getElementById("backButton").addEventListener("click", function() {
+
+    document.getElementById("confirmation").style.display = "none";
+
+});
+
+
+document.getElementById("calculateButton").addEventListener("click", function() {
+
+    updateAll();
+
+    document.getElementById("confirmation").style.display = "none";
+
+    document.getElementById("morningResult").scrollIntoView({
+        behavior: "smooth"
+    });
+
+});
 </script>
 
 </body>
