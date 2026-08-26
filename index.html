@@ -539,6 +539,11 @@ document.getElementById("calculateButton").addEventListener("click", function() 
 
     document.getElementById("confirmation").style.display = "none";
 
+    window.scrollTo({
+        top: previousScrollPosition,
+        behavior: "instant"
+    });
+
 });
 
 </script>
