@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>血糖管理</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #f2f2f2;
+        font-family: Arial, "Noto Sans JP", sans-serif;
+        color: #222;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 15px;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 34px;
+        margin: 10px 0 25px;
+    }
+
+    .item {
+        background: white;
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 2px 7px rgba(0,0,0,0.10);
+    }
+
+    .title {
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 12px;
+    }
+
+    .unit {
+        font-size: 18px;
+        font-weight: normal;
+        margin-left: 5px;
+    }
+
+    input[type="number"] {
+        width: 100%;
+        height: 70px;
+        font-size: 36px;
+        padding: 10px 15px;
+        border: 3px solid #888;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    input[type="number"]:focus {
+        border-color: #333;
+        outline: none;
+    }
+
+    .result {
+        margin-top: 15px;
+        padding: 18px 10px;
+        text-align: center;
+        background: #eeeeee;
+        border-radius: 12px;
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .dose-number {
+        font-size: 42px;
+    }
+
+    .check {
+        margin-top: 18px;
+        padding: 10px 5px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .check input {
+        width: 30px;
+        height: 30px;
+        vertical-align: middle;
+        margin-right: 8px;
+    }
+
+    .fixed {
+        background: #eeeeee;
+        padding: 20px 10px;
+        border-radius: 12px;
+        font-size: 30px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .notice {
+        text-align: center;
+        font-size: 18px;
+        margin-top: 10px;
+        color: #555;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>今日の血糖値</h1>
+
+    <!-- 朝 -->
+    <div class="item">
+        <div class="title">
+            朝 <span class="unit">血糖値（mg/dL）</span>
+        </div>
+
+        <input type="number" id="morning" placeholder="入力">
+
+        <div class="result" id="morningResult">
+            血糖値を入力してください
+        </div>
+    </div>
+
+
+    <!-- 昼 -->
+    <div class="item">
+        <div class="title">
+            昼 <span class="unit">血糖値（mg/dL）</span>
+        </div>
+
+        <input type="number" id="lunch" placeholder="入力">
+
+        <div class="check">
+            <label>
+                <input type="checkbox" id="lunchSpecial">
+                外食・丼・揚げ物
+            </label>
+        </div>
+
+        <div class="result" id="lunchResult">
+            血糖値を入力してください
+        </div>
+    </div>
+
+
+    <!-- 3時間後 -->
+    <div class="item">
+        <div class="title">
+            3時間後 <span class="unit">血糖値（mg/dL）</span>
+        </div>
+
+        <input type="number" id="threeHours" placeholder="入力">
+
+        <div class="result" id="threeHoursResult">
+            血糖値を入力してください
+        </div>
+    </div>
+
+
+    <!-- 18時 -->
+    <div class="item">
+        <div class="title">18時</div>
+
+        <div class="fixed">
+            トレシーバ<br>
+            <span class="dose-number">7単位</span>
+        </div>
+    </div>
+
+
+    <!-- 夜 -->
+    <div class="item">
+        <div class="title">
+            夜 <span class="unit">血糖値（mg/dL）</span>
+        </div>
+
+        <input type="number" id="dinner" placeholder="入力">
+
+        <div class="check">
+            <label>
+                <input type="checkbox" id="dinnerSpecial">
+                外食・丼・揚げ物
+            </label>
+        </div>
+
+        <div class="result" id="dinnerResult">
+            血糖値を入力してください
+        </div>
+    </div>
+
+
+    <!-- 就寝前 -->
+    <div class="item">
+        <div class="title">
+            就寝前 <span class="unit">血糖値（mg/dL）</span>
+        </div>
+
+        <input type="number" id="bedtime" placeholder="入力">
+
+        <div class="result" id="bedtimeResult">
+            血糖値を入力してください
+        </div>
+    </div>
+
+    <div class="notice">
+        ※血糖値を入力するとインスリン量が表示されます
+    </div>
+
+</div>
+
+
+<script>
+
+function calculate(type, value, special = false) {
+
+    if (value === "" || value === null) {
+        return "血糖値を入力してください";
+    }
+
+    const bg = Number(value);
+
+    if (bg < 70) {
+        return "計算対象外";
+    }
+
+    let dose = 0;
+
+    if (bg <= 249) {
+
+        if (type === "morning") dose = 8;
+        if (type === "lunch") dose = special ? 8 : 6;
+        if (type === "threeHours") dose = 0;
+        if (type === "dinner") dose = special ? 9 : 7;
+        if (type === "bedtime") dose = 0;
+
+    } else if (bg <= 299) {
+
+        if (type === "morning") dose = 9;
+        if (type === "lunch") dose = special ? 9 : 7;
+        if (type === "threeHours") dose = 0;
+        if (type === "dinner") dose = special ? 10 : 8;
+        if (type === "bedtime") dose = 0;
+
+    } else if (bg <= 349) {
+
+        if (type === "morning") dose = 10;
+        if (type === "lunch") dose = special ? 10 : 8;
+        if (type === "threeHours") dose = 1;
+        if (type === "dinner") dose = special ? 11 : 9;
+        if (type === "bedtime") dose = 1;
+
+    } else if (bg <= 399) {
+
+        if (type === "morning") dose = 11;
+        if (type === "lunch") dose = special ? 11 : 9;
+        if (type === "threeHours") dose = 2;
+        if (type === "dinner") dose = special ? 12 : 10;
+        if (type === "bedtime") dose = 2;
+
+    } else if (bg <= 449) {
+
+        if (type === "morning") dose = 12;
+        if (type === "lunch") dose = special ? 12 : 10;
+        if (type === "threeHours") dose = 3;
+        if (type === "dinner") dose = special ? 13 : 11;
+        if (type === "bedtime") dose = 3;
+
+    } else if (bg <= 499) {
+
+        if (type === "morning") dose = 13;
+        if (type === "lunch") dose = special ? 13 : 11;
+        if (type === "threeHours") dose = 4;
+        if (type === "dinner") dose = special ? 14 : 12;
+        if (type === "bedtime") dose = 4;
+
+    } else {
+
+        if (type === "morning") dose = 14;
+        if (type === "lunch") dose = special ? 14 : 12;
+        if (type === "threeHours") dose = 5;
+        if (type === "dinner") dose = special ? 15 : 13;
+        if (type === "bedtime") dose = 5;
+    }
+
+    return "インスリン　" + dose + "単位";
+}
+
+
+function updateAll() {
+
+    const morning =
+        document.getElementById("morning").value;
+
+    const lunch =
+        document.getElementById("lunch").value;
+
+    const threeHours =
+        document.getElementById("threeHours").value;
+
+    const dinner =
+        document.getElementById("dinner").value;
+
+    const bedtime =
+        document.getElementById("bedtime").value;
+
+    const lunchSpecial =
+        document.getElementById("lunchSpecial").checked;
+
+    const dinnerSpecial =
+        document.getElementById("dinnerSpecial").checked;
+
+
+    document.getElementById("morningResult").textContent =
+        calculate("morning", morning);
+
+    document.getElementById("lunchResult").textContent =
+        calculate("lunch", lunch, lunchSpecial);
+
+    document.getElementById("threeHoursResult").textContent =
+        calculate("threeHours", threeHours);
+
+    document.getElementById("dinnerResult").textContent =
+        calculate("dinner", dinner, dinnerSpecial);
+
+    document.getElementById("bedtimeResult").textContent =
+        calculate("bedtime", bedtime);
+}
+
+
+document.querySelectorAll("input").forEach(function(input) {
+
+    input.addEventListener("input", updateAll);
+
+    input.addEventListener("change", updateAll);
+
+});
+
+</script>
+
+</body>
+</html>
