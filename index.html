@@ -193,6 +193,14 @@
         font-size: 23px;
         font-weight: bold;
     }
+ /* 最新の判定結果 */
+.result.latest-result {
+    color: red;
+}
+
+.result.latest-result .result-dose {
+    color: red;
+}
 </style>
 
 </head>
@@ -416,7 +424,8 @@ function calculate(type, value, special = false) {
 
 
 function updateAll() {
-
+    const latestResult =
+        localStorage.getItem("latestBloodSugarResult");
     const morning =
         document.getElementById("morning").value;
 
@@ -542,6 +551,34 @@ function updateAll() {
             '</div>';
 
         bedtimeResult.style.display = "block";
+    /* 最新の判定結果だけ赤字 */
+
+    morningResult.classList.remove("latest-result");
+    lunchResult.classList.remove("latest-result");
+    threeHoursResult.classList.remove("latest-result");
+    dinnerResult.classList.remove("latest-result");
+    bedtimeResult.classList.remove("latest-result");
+
+
+    if (latestResult === "morning") {
+        morningResult.classList.add("latest-result");
+    }
+
+    if (latestResult === "lunch") {
+        lunchResult.classList.add("latest-result");
+    }
+
+    if (latestResult === "threeHours") {
+        threeHoursResult.classList.add("latest-result");
+    }
+
+    if (latestResult === "dinner") {
+        dinnerResult.classList.add("latest-result");
+    }
+
+    if (latestResult === "bedtime") {
+        bedtimeResult.classList.add("latest-result");
+    }
     }
 }
 
@@ -552,7 +589,30 @@ function updateAll() {
 document.querySelectorAll(".confirm-button").forEach(function(button) {
 
     button.addEventListener("click", function() {
+        const currentItem = button.closest(".item");
+       let currentType = "";
 
+if (currentItem.querySelector("#morning")) {
+    currentType = "morning";
+}
+
+if (currentItem.querySelector("#lunch")) {
+    currentType = "lunch";
+}
+
+if (currentItem.querySelector("#threeHours")) {
+    currentType = "threeHours";
+}
+
+if (currentItem.querySelector("#dinner")) {
+    currentType = "dinner";
+}
+
+if (currentItem.querySelector("#bedtime")) {
+    currentType = "bedtime";
+}
+
+confirmation.dataset.currentType = currentType;
         const confirmation =
             document.getElementById("confirmation");
 
@@ -645,6 +705,14 @@ document.getElementById("backButton").addEventListener("click", function() {
    ========================= */
 
 document.getElementById("calculateButton").onclick = function() {
+
+    const currentType =
+        document.getElementById("confirmation").dataset.currentType;
+
+    localStorage.setItem(
+        "latestBloodSugarResult",
+        currentType
+    );
 
     updateAll();
 
