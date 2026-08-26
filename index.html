@@ -934,7 +934,7 @@ function checkTresibaTime() {
 
     /* 3時間後の判定から1時間経過 */
 
-   if (elapsed >= 60 * 1000) {
+  if (elapsed >= 10 * 1000) {
         /* 3時間後を黒字 */
 
         threeHoursResult.classList.remove(
@@ -955,7 +955,7 @@ function checkTresibaTime() {
 
     checkTresibaTime();
 
-}, 60000);
+}, 5000);
    checkTresibaTime();
 /* =========================
    数値入力時に自動保存
