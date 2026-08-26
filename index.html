@@ -676,7 +676,7 @@ document.getElementById("backButton").addEventListener("click", function() {
    この内容で判定する
    ========================= */
 
-document.getElementById("calculateButton").onclick = function() {
+document.getElementById("calculateButton").addEventListener("click", function() {
 
     const confirmation =
         document.getElementById("confirmation");
@@ -685,62 +685,33 @@ document.getElementById("calculateButton").onclick = function() {
         confirmation.dataset.currentType;
 
 
-    /* いったん全部の赤字を解除 */
-
-    document.getElementById("morningResult")
-        .classList.remove("latest-result");
-
-    document.getElementById("lunchResult")
-        .classList.remove("latest-result");
-
-    document.getElementById("threeHoursResult")
-        .classList.remove("latest-result");
-
-    document.getElementById("dinnerResult")
-        .classList.remove("latest-result");
-
-    document.getElementById("bedtimeResult")
-        .classList.remove("latest-result");
-
-
-    /* 判定結果を表示 */
+    /* 判定結果を更新 */
 
     updateAll();
 
 
-    /* 今回判定した時間帯だけ赤字 */
+    /* すべての結果をいったん黒に戻す */
 
-    if (currentType === "morning") {
-        document.getElementById("morningResult")
-            .classList.add("latest-result");
-    }
+    document.querySelectorAll(".result").forEach(function(result) {
+        result.classList.remove("latest-result");
+    });
 
-    if (currentType === "lunch") {
-        document.getElementById("lunchResult")
-            .classList.add("latest-result");
-    }
 
-    if (currentType === "threeHours") {
-        document.getElementById("threeHoursResult")
-            .classList.add("latest-result");
-    }
+    /* 今回判定した結果だけ赤くする */
 
-    if (currentType === "dinner") {
-        document.getElementById("dinnerResult")
-            .classList.add("latest-result");
-    }
+    const latestResult =
+        document.getElementById(currentType + "Result");
 
-    if (currentType === "bedtime") {
-        document.getElementById("bedtimeResult")
-            .classList.add("latest-result");
+    if (latestResult) {
+        latestResult.classList.add("latest-result");
     }
 
 
-    /* 確認画面を消す */
+    /* 確認画面を閉じる */
 
     confirmation.style.display = "none";
 
-};
+});
 
     updateAll();
 
