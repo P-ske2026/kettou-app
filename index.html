@@ -589,32 +589,32 @@ function updateAll() {
 document.querySelectorAll(".confirm-button").forEach(function(button) {
 
     button.addEventListener("click", function() {
-        const currentItem = button.closest(".item");
-       let currentType = "";
 
-if (currentItem.querySelector("#morning")) {
-    currentType = "morning";
-}
-
-if (currentItem.querySelector("#lunch")) {
-    currentType = "lunch";
-}
-
-if (currentItem.querySelector("#threeHours")) {
-    currentType = "threeHours";
-}
-
-if (currentItem.querySelector("#dinner")) {
-    currentType = "dinner";
-}
-
-if (currentItem.querySelector("#bedtime")) {
-    currentType = "bedtime";
-}
-
-confirmation.dataset.currentType = currentType;
         const confirmation =
             document.getElementById("confirmation");
+
+        /* どの時間帯の確認ボタンを押したか記録 */
+
+        const currentItem = button.closest(".item");
+
+        let currentType = "";
+
+        if (currentItem.querySelector("#morning")) {
+            currentType = "morning";
+        } else if (currentItem.querySelector("#lunch")) {
+            currentType = "lunch";
+        } else if (currentItem.querySelector("#threeHours")) {
+            currentType = "threeHours";
+        } else if (currentItem.querySelector("#dinner")) {
+            currentType = "dinner";
+        } else if (currentItem.querySelector("#bedtime")) {
+            currentType = "bedtime";
+        }
+
+        confirmation.dataset.currentType = currentType;
+
+
+        /* 入力値を取得 */
 
         const morning =
             document.getElementById("morning").value;
@@ -637,6 +637,8 @@ confirmation.dataset.currentType = currentType;
         const dinnerSpecial =
             document.getElementById("dinnerSpecial").checked;
 
+
+        /* 確認画面の内容 */
 
         let text = "";
 
@@ -665,19 +667,18 @@ confirmation.dataset.currentType = currentType;
             '</div>';
 
 
-        document.getElementById("confirmationText").innerHTML = text;
+        document.getElementById("confirmationText").innerHTML =
+            text;
 
 
-        /* 確認画面を押したボタンの直後へ移動 */
+        /* 確認画面を押したボタンの直後に移動 */
 
         button.parentNode.insertBefore(
             confirmation,
             button.nextSibling
         );
 
-
         confirmation.style.display = "block";
-
 
         confirmation.scrollIntoView({
             behavior: "smooth",
@@ -687,7 +688,6 @@ confirmation.dataset.currentType = currentType;
     });
 
 });
-
 
 /* =========================
    戻って修正する
@@ -874,97 +874,7 @@ document.getElementById("dinnerSpecial").addEventListener(
     saveData
 );
 
-/* =========================
-   入力内容の確認
-   ========================= */
 
-document.querySelectorAll(".confirm-button").forEach(function(button) {
-
-    button.addEventListener("click", function() {
-
-        const confirmation =
-            document.getElementById("confirmation");
-
-
-        /* 押した確認ボタンの直後に確認画面を移動 */
-
-        button.parentNode.insertBefore(
-            confirmation,
-            button.nextSibling
-        );
-
-
-        const morning =
-            document.getElementById("morning").value;
-
-        const lunch =
-            document.getElementById("lunch").value;
-
-        const threeHours =
-            document.getElementById("threeHours").value;
-
-        const dinner =
-            document.getElementById("dinner").value;
-
-        const bedtime =
-            document.getElementById("bedtime").value;
-
-
-        const lunchSpecial =
-            document.getElementById("lunchSpecial").checked;
-
-        const dinnerSpecial =
-            document.getElementById("dinnerSpecial").checked;
-
-
-        let text = "";
-
-
-        text += '<div class="confirmation-line">朝：' +
-            (morning === "" ? "未入力" : morning + " mg/dL") +
-            '</div>';
-
-
-        text += '<div class="confirmation-line">昼：' +
-            (lunch === "" ? "未入力" : lunch + " mg/dL") +
-            (lunchSpecial ? "（外食・丼・揚げ物）" : "") +
-            '</div>';
-
-
-        text += '<div class="confirmation-line">3時間後：' +
-            (threeHours === "" ? "未入力" : threeHours + " mg/dL") +
-            '</div>';
-
-
-        text += '<div class="confirmation-line">18時：トレシーバ 7単位</div>';
-
-
-        text += '<div class="confirmation-line">夜：' +
-            (dinner === "" ? "未入力" : dinner + " mg/dL") +
-            (dinnerSpecial ? "（外食・丼・揚げ物）" : "") +
-            '</div>';
-
-
-        text += '<div class="confirmation-line">就寝前：' +
-            (bedtime === "" ? "未入力" : bedtime + " mg/dL") +
-            '</div>';
-
-
-        document.getElementById("confirmationText").innerHTML =
-            text;
-
-
-        confirmation.style.display = "block";
-
-
-        confirmation.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
-    });
-
-});
 /* =========================
    ページを開いたときに復元
    ========================= */
