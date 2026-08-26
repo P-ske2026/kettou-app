@@ -311,6 +311,8 @@
 
 <script>
 
+let previousScrollPosition = 0;
+
 function calculate(type, value, special = false) {
 
     if (value === "" || value === null) {
@@ -455,6 +457,8 @@ function updateAll() {
 document.querySelectorAll(".confirm-button").forEach(function(button) {
 
     button.addEventListener("click", function() {
+
+        previousScrollPosition = window.scrollY;
 
         const morning =
             document.getElementById("morning").value;
