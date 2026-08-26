@@ -545,7 +545,112 @@ function updateAll() {
     }
 }
 
+/* =========================
+   入力内容を確認
+   ========================= */
 
+document.querySelectorAll(".confirm-button").forEach(function(button) {
+
+    button.addEventListener("click", function() {
+
+        const confirmation =
+            document.getElementById("confirmation");
+
+        const morning =
+            document.getElementById("morning").value;
+
+        const lunch =
+            document.getElementById("lunch").value;
+
+        const threeHours =
+            document.getElementById("threeHours").value;
+
+        const dinner =
+            document.getElementById("dinner").value;
+
+        const bedtime =
+            document.getElementById("bedtime").value;
+
+        const lunchSpecial =
+            document.getElementById("lunchSpecial").checked;
+
+        const dinnerSpecial =
+            document.getElementById("dinnerSpecial").checked;
+
+
+        let text = "";
+
+        text += '<div class="confirmation-line">朝：' +
+            (morning === "" ? "未入力" : morning + " mg/dL") +
+            '</div>';
+
+        text += '<div class="confirmation-line">昼：' +
+            (lunch === "" ? "未入力" : lunch + " mg/dL") +
+            (lunchSpecial ? "（外食・丼・揚げ物）" : "") +
+            '</div>';
+
+        text += '<div class="confirmation-line">3時間後：' +
+            (threeHours === "" ? "未入力" : threeHours + " mg/dL") +
+            '</div>';
+
+        text += '<div class="confirmation-line">18時：トレシーバ 7単位</div>';
+
+        text += '<div class="confirmation-line">夜：' +
+            (dinner === "" ? "未入力" : dinner + " mg/dL") +
+            (dinnerSpecial ? "（外食・丼・揚げ物）" : "") +
+            '</div>';
+
+        text += '<div class="confirmation-line">就寝前：' +
+            (bedtime === "" ? "未入力" : bedtime + " mg/dL") +
+            '</div>';
+
+
+        document.getElementById("confirmationText").innerHTML = text;
+
+
+        /* 確認画面を押したボタンの直後へ移動 */
+
+        button.parentNode.insertBefore(
+            confirmation,
+            button.nextSibling
+        );
+
+
+        confirmation.style.display = "block";
+
+
+        confirmation.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+    });
+
+});
+
+
+/* =========================
+   戻って修正する
+   ========================= */
+
+document.getElementById("backButton").addEventListener("click", function() {
+
+    document.getElementById("confirmation").style.display = "none";
+
+});
+
+
+/* =========================
+   この内容で判定する
+   ========================= */
+
+document.getElementById("calculateButton").addEventListener("click", function() {
+
+    updateAll();
+
+    document.getElementById("confirmation").style.display = "none";
+
+});
 /* =========================
    入力内容を日付ごとに保存
    ========================= */
