@@ -65,19 +65,37 @@
     }
 
     .result {
-        margin-top: 15px;
-        padding: 18px 10px;
-        text-align: center;
-        background: #eeeeee;
-        border-radius: 12px;
-        font-size: 30px;
-        font-weight: bold;
-    }
+    margin-top: 15px;
+    padding: 16px 10px;
+    text-align: center;
+    background: #eeeeee;
+    border-radius: 12px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.result-label {
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+
+.result-dose {
+    font-size: 42px;
+    font-weight: bold;
+}
 
     .dose-number {
         font-size: 42px;
     }
+.result-label {
+    font-size: 22px;
+    margin-bottom: 5px;
+}
 
+.result-dose {
+    font-size: 42px;
+    font-weight: bold;
+}
     .check {
         margin-top: 18px;
         padding: 10px 5px;
@@ -388,11 +406,20 @@ function calculate(type, value, special = false) {
 
 function updateAll() {
 
-    const morning = document.getElementById("morning").value;
-    const lunch = document.getElementById("lunch").value;
-    const threeHours = document.getElementById("threeHours").value;
-    const dinner = document.getElementById("dinner").value;
-    const bedtime = document.getElementById("bedtime").value;
+    const morning =
+        document.getElementById("morning").value;
+
+    const lunch =
+        document.getElementById("lunch").value;
+
+    const threeHours =
+        document.getElementById("threeHours").value;
+
+    const dinner =
+        document.getElementById("dinner").value;
+
+    const bedtime =
+        document.getElementById("bedtime").value;
 
     const lunchSpecial =
         document.getElementById("lunchSpecial").checked;
@@ -417,27 +444,94 @@ function updateAll() {
         document.getElementById("bedtimeResult");
 
 
-    morningResult.textContent =
+    /* 朝 */
+
+    const morningAnswer =
         calculate("morning", morning);
 
-    lunchResult.textContent =
+    if (morningAnswer === "血糖値を入力してください") {
+        morningResult.style.display = "none";
+    } else {
+        morningResult.innerHTML =
+            '<div class="result-label">朝のインスリン</div>' +
+            '<div class="result-dose">' +
+            morningAnswer.replace("インスリン　", "") +
+            '</div>';
+
+        morningResult.style.display = "block";
+    }
+
+
+    /* 昼 */
+
+    const lunchAnswer =
         calculate("lunch", lunch, lunchSpecial);
 
-    threeHoursResult.textContent =
+    if (lunchAnswer === "血糖値を入力してください") {
+        lunchResult.style.display = "none";
+    } else {
+        lunchResult.innerHTML =
+            '<div class="result-label">昼のインスリン</div>' +
+            '<div class="result-dose">' +
+            lunchAnswer.replace("インスリン　", "") +
+            '</div>';
+
+        lunchResult.style.display = "block";
+    }
+
+
+    /* 3時間後 */
+
+    const threeHoursAnswer =
         calculate("threeHours", threeHours);
 
-    dinnerResult.textContent =
+    if (threeHoursAnswer === "血糖値を入力してください") {
+        threeHoursResult.style.display = "none";
+    } else {
+        threeHoursResult.innerHTML =
+            '<div class="result-label">3時間後のインスリン</div>' +
+            '<div class="result-dose">' +
+            threeHoursAnswer.replace("インスリン　", "") +
+            '</div>';
+
+        threeHoursResult.style.display = "block";
+    }
+
+
+    /* 夜 */
+
+    const dinnerAnswer =
         calculate("dinner", dinner, dinnerSpecial);
 
-    bedtimeResult.textContent =
+    if (dinnerAnswer === "血糖値を入力してください") {
+        dinnerResult.style.display = "none";
+    } else {
+        dinnerResult.innerHTML =
+            '<div class="result-label">夜のインスリン</div>' +
+            '<div class="result-dose">' +
+            dinnerAnswer.replace("インスリン　", "") +
+            '</div>';
+
+        dinnerResult.style.display = "block";
+    }
+
+
+    /* 就寝前 */
+
+    const bedtimeAnswer =
         calculate("bedtime", bedtime);
 
+    if (bedtimeAnswer === "血糖値を入力してください") {
+        bedtimeResult.style.display = "none";
+    } else {
+        bedtimeResult.innerHTML =
+            '<div class="result-label">就寝前のインスリン</div>' +
+            '<div class="result-dose">' +
+            bedtimeAnswer.replace("インスリン　", "") +
+            '</div>';
 
-    morningResult.style.display = "block";
-    lunchResult.style.display = "block";
-    threeHoursResult.style.display = "block";
-    dinnerResult.style.display = "block";
-    bedtimeResult.style.display = "block";
+        bedtimeResult.style.display = "block";
+    }
 }
 
 
