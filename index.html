@@ -771,10 +771,10 @@ document.querySelectorAll(".confirm-button").forEach(function(button) {
             '</div>';
 
 
-        text +=
-            '<div class="confirmation-line">' +
-            '18時：トレシーバ 7単位' +
-            '</div>';
+      text +=
+    '<div class="confirmation-line" id="tresibaResult">' +
+    '18時：トレシーバ 7単位' +
+    '</div>';
 
 
         text +=
@@ -872,6 +872,30 @@ document.getElementById("calculateButton").addEventListener(
         );
 
 
+        /* 3時間後を判定した時刻を保存 */
+
+        if (currentType === "threeHours") {
+
+            localStorage.setItem(
+                "threeHoursJudgedAt",
+                new Date().toISOString()
+            );
+
+        }
+
+
+        /* 夜を判定したら
+           3時間後のタイマーを解除 */
+
+        if (currentType === "dinner") {
+
+            localStorage.removeItem(
+                "threeHoursJudgedAt"
+            );
+
+        }
+
+
         /* 入力内容を保存 */
 
         saveData();
@@ -883,8 +907,57 @@ document.getElementById("calculateButton").addEventListener(
 
     }
 );
+function checkTresibaTime() {
+
+    const judgedAt =
+        localStorage.getItem("threeHoursJudgedAt");
+
+    const tresibaResult =
+        document.getElementById("tresibaResult");
+
+    const threeHoursResult =
+        document.getElementById("threeHoursResult");
 
 
+    if (!judgedAt ||
+        !tresibaResult ||
+        !threeHoursResult) {
+
+        return;
+
+    }
+
+
+    const elapsed =
+        new Date() - new Date(judgedAt);
+
+
+    /* 3時間後の判定から1時間経過 */
+
+    if (elapsed >= 60 * 60 * 1000) {
+
+        /* 3時間後を黒字 */
+
+        threeHoursResult.classList.remove(
+            "latest-result"
+        );
+
+
+        /* トレシーバを赤字 */
+
+        tresibaResult.classList.add(
+            "latest-result"
+        );
+
+    }
+
+}
+ setInterval(function() {
+
+    checkTresibaTime();
+
+}, 60000);
+   checkTresibaTime();
 /* =========================
    数値入力時に自動保存
    ========================= */
