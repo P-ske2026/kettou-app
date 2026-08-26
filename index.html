@@ -841,6 +841,26 @@ function loadData() {
     /* 保存されていた入力から結果も再表示 */
 
     updateAll();
+
+    /* 最新の判定結果を赤字にする */
+
+    const latestResult =
+        localStorage.getItem("latestBloodSugarResult");
+
+    document.querySelectorAll(".result").forEach(function(result) {
+        result.classList.remove("latest-result");
+    });
+
+    if (latestResult) {
+
+        const resultElement =
+            document.getElementById(latestResult + "Result");
+
+        if (resultElement) {
+            resultElement.classList.add("latest-result");
+        }
+
+    }
 }
 
 
