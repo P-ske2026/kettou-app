@@ -964,12 +964,8 @@ function checkTresibaTime() {
 
         /* トレシーバを赤字 */
 
-        tresibaResult.classList.add(
-            "latest-result"
-        );
-
-        tresibaResult.style.color = "red";
-
+       tresibaResult.style.color = "red";
+tresibaResult.style.setProperty("color", "red", "important");
     }
 
 }
