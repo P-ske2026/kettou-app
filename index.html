@@ -871,6 +871,16 @@ document.getElementById("calculateButton").addEventListener(
             currentType
         );
 
+       /* 3時間後の判定時刻を保存 */
+
+if (currentType === "threeHours") {
+
+    localStorage.setItem(
+        "threeHoursJudgedAt",
+        new Date().toISOString()
+    );
+
+}
 
         /* 3時間後を判定した時刻を保存 */
 
