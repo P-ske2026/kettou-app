@@ -411,14 +411,6 @@ function updateAll() {
         calculate("bedtime", bedtime);
 }
 
-
-document.querySelectorAll("input").forEach(function(input) {
-
-    input.addEventListener("input", updateAll);
-
-    input.addEventListener("change", updateAll);
-
-});
 document.getElementById("confirmButton").addEventListener("click", function() {
 
     const morning = document.getElementById("morning").value;
