@@ -648,7 +648,169 @@ document.getElementById("calculateButton").addEventListener("click", function() 
     document.getElementById("confirmation").style.display = "none";
 
 });
+/* =========================
+   入力内容を日付ごとに保存
+   ========================= */
 
+const STORAGE_KEY = "bloodSugarData";
+
+
+function saveData() {
+
+    const data = {
+        date: new Date().toLocaleDateString("ja-JP"),
+
+        morning:
+            document.getElementById("morning").value,
+
+        lunch:
+            document.getElementById("lunch").value,
+
+        threeHours:
+            document.getElementById("threeHours").value,
+
+        dinner:
+            document.getElementById("dinner").value,
+
+        bedtime:
+            document.getElementById("bedtime").value,
+
+        lunchSpecial:
+            document.getElementById("lunchSpecial").checked,
+
+        dinnerSpecial:
+            document.getElementById("dinnerSpecial").checked
+    };
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data)
+    );
+}
+
+
+/* =========================
+   保存データを読み込む
+   ========================= */
+
+function loadData() {
+
+    const saved =
+        localStorage.getItem(STORAGE_KEY);
+
+    if (!saved) {
+        return;
+    }
+
+    const data =
+        JSON.parse(saved);
+
+    const today =
+        new Date().toLocaleDateString("ja-JP");
+
+
+    /* 日付が違えば前日のデータを削除 */
+
+    if (data.date !== today) {
+
+        localStorage.removeItem(STORAGE_KEY);
+
+        document.getElementById("morning").value = "";
+        document.getElementById("lunch").value = "";
+        document.getElementById("threeHours").value = "";
+        document.getElementById("dinner").value = "";
+        document.getElementById("bedtime").value = "";
+
+        document.getElementById("lunchSpecial").checked = false;
+        document.getElementById("dinnerSpecial").checked = false;
+
+        return;
+    }
+
+
+    /* 今日のデータなら復元 */
+
+    document.getElementById("morning").value =
+        data.morning || "";
+
+    document.getElementById("lunch").value =
+        data.lunch || "";
+
+    document.getElementById("threeHours").value =
+        data.threeHours || "";
+
+    document.getElementById("dinner").value =
+        data.dinner || "";
+
+    document.getElementById("bedtime").value =
+        data.bedtime || "";
+
+    document.getElementById("lunchSpecial").checked =
+        data.lunchSpecial || false;
+
+    document.getElementById("dinnerSpecial").checked =
+        data.dinnerSpecial || false;
+}
+
+
+/* =========================
+   入力されたら自動保存
+   ========================= */
+
+document.querySelectorAll('input[type="number"]').forEach(function(input) {
+
+    input.addEventListener("input", function() {
+        saveData();
+    });
+
+});
+
+
+document.getElementById("lunchSpecial").addEventListener("change", function() {
+    saveData();
+});
+
+
+document.getElementById("dinnerSpecial").addEventListener("change", function() {
+    saveData();
+});
+
+
+/* =========================
+   ページを開いたときに復元
+   ========================= */
+
+loadData();
+
+
+/* =========================
+   日付が変わったら自動リセット
+   ========================= */
+
+setInterval(function() {
+
+    const saved =
+        localStorage.getItem(STORAGE_KEY);
+
+    if (!saved) {
+        return;
+    }
+
+    const data =
+        JSON.parse(saved);
+
+    const today =
+        new Date().toLocaleDateString("ja-JP");
+
+    if (data.date !== today) {
+
+        localStorage.removeItem(STORAGE_KEY);
+
+        location.reload();
+
+    }
+
+}, 60000);
 </script>
 
 
