@@ -949,14 +949,17 @@ function checkTresibaTime() {
         new Date() - new Date(judgedAt);
 
 
-    /* 3時間後の判定から1時間経過 */
+    /* 3時間後の判定から1分経過 */
 
-  if (elapsed >= 10 * 1000) {
+    if (elapsed >= 60 * 1000) {
+
         /* 3時間後を黒字 */
 
         threeHoursResult.classList.remove(
             "latest-result"
         );
+
+        threeHoursResult.style.color = "";
 
 
         /* トレシーバを赤字 */
@@ -964,6 +967,8 @@ function checkTresibaTime() {
         tresibaResult.classList.add(
             "latest-result"
         );
+
+        tresibaResult.style.color = "red";
 
     }
 
