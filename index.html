@@ -170,6 +170,7 @@
 
 </head>
 
+```html
 <body>
 
 <div class="container">
@@ -183,6 +184,10 @@
         </div>
 
         <input type="number" id="morning" placeholder="入力" min="0" max="1000" step="1">
+
+        <button class="confirm-button">
+            入力内容を確認
+        </button>
 
         <div class="result" id="morningResult">
             血糖値を入力してください
@@ -205,6 +210,10 @@
             </label>
         </div>
 
+        <button class="confirm-button">
+            入力内容を確認
+        </button>
+
         <div class="result" id="lunchResult">
             血糖値を入力してください
         </div>
@@ -218,6 +227,10 @@
         </div>
 
         <input type="number" id="threeHours" placeholder="入力" min="0" max="1000" step="1">
+
+        <button class="confirm-button">
+            入力内容を確認
+        </button>
 
         <div class="result" id="threeHoursResult">
             血糖値を入力してください
@@ -251,6 +264,10 @@
             </label>
         </div>
 
+        <button class="confirm-button">
+            入力内容を確認
+        </button>
+
         <div class="result" id="dinnerResult">
             血糖値を入力してください
         </div>
@@ -265,40 +282,38 @@
 
         <input type="number" id="bedtime" placeholder="入力" min="0" max="1000" step="1">
 
+        <button class="confirm-button">
+            入力内容を確認
+        </button>
+
         <div class="result" id="bedtimeResult">
             血糖値を入力してください
         </div>
     </div>
 
-    <div class="notice">
-    ※入力後、「入力内容を確認」を押してください
-</div>
 
-<button id="confirmButton" class="confirm-button">
-    入力内容を確認
-</button>
+    <div id="confirmation" class="confirmation" style="display:none;">
 
-<div id="confirmation" class="confirmation" style="display:none;">
+        <div class="confirmation-title">
+            入力内容の確認
+        </div>
 
-    <div class="confirmation-title">
-        入力内容の確認
+        <div id="confirmationText"></div>
+
+        <button id="calculateButton" class="calculate-button">
+            この内容で判定する
+        </button>
+
+        <button id="backButton" class="back-button">
+            戻って修正する
+        </button>
+
     </div>
 
-    <div id="confirmationText"></div>
-
-    <button id="calculateButton" class="calculate-button">
-        この内容で判定する
-    </button>
-
-    <button id="backButton" class="back-button">
-        戻って修正する
-    </button>
-
-</div>
-
 </div>
 
 
+```html
 <script>
 
 function calculate(type, value, special = false) {
@@ -416,47 +431,71 @@ function updateAll() {
         calculate("bedtime", bedtime);
 }
 
-document.getElementById("confirmButton").addEventListener("click", function() {
 
-    const morning = document.getElementById("morning").value;
-    const lunch = document.getElementById("lunch").value;
-    const threeHours = document.getElementById("threeHours").value;
-    const dinner = document.getElementById("dinner").value;
-    const bedtime = document.getElementById("bedtime").value;
+/* 各項目の「入力内容を確認」ボタン */
 
-    const lunchSpecial = document.getElementById("lunchSpecial").checked;
-    const dinnerSpecial = document.getElementById("dinnerSpecial").checked;
+document.querySelectorAll(".confirm-button").forEach(function(button) {
 
-    let text = "";
+    button.addEventListener("click", function() {
 
-    text += '<div class="confirmation-line">朝：' +
-        (morning === "" ? "未入力" : morning + " mg/dL") + '</div>';
+        const morning =
+            document.getElementById("morning").value;
 
-    text += '<div class="confirmation-line">昼：' +
-        (lunch === "" ? "未入力" : lunch + " mg/dL") +
-        (lunchSpecial ? "（外食・丼・揚げ物）" : "") + '</div>';
+        const lunch =
+            document.getElementById("lunch").value;
 
-    text += '<div class="confirmation-line">3時間後：' +
-        (threeHours === "" ? "未入力" : threeHours + " mg/dL") + '</div>';
+        const threeHours =
+            document.getElementById("threeHours").value;
 
-    text += '<div class="confirmation-line">18時：トレシーバ 7単位</div>';
+        const dinner =
+            document.getElementById("dinner").value;
 
-    text += '<div class="confirmation-line">夜：' +
-        (dinner === "" ? "未入力" : dinner + " mg/dL") +
-        (dinnerSpecial ? "（外食・丼・揚げ物）" : "") + '</div>';
+        const bedtime =
+            document.getElementById("bedtime").value;
 
-    text += '<div class="confirmation-line">就寝前：' +
-        (bedtime === "" ? "未入力" : bedtime + " mg/dL") + '</div>';
+        const lunchSpecial =
+            document.getElementById("lunchSpecial").checked;
 
-    document.getElementById("confirmationText").innerHTML = text;
+        const dinnerSpecial =
+            document.getElementById("dinnerSpecial").checked;
 
-    document.getElementById("confirmation").style.display = "block";
 
-    document.getElementById("confirmation").scrollIntoView({
-        behavior: "smooth"
+        let text = "";
+
+        text += '<div class="confirmation-line">朝：' +
+            (morning === "" ? "未入力" : morning + " mg/dL") + '</div>';
+
+        text += '<div class="confirmation-line">昼：' +
+            (lunch === "" ? "未入力" : lunch + " mg/dL") +
+            (lunchSpecial ? "（外食・丼・揚げ物）" : "") + '</div>';
+
+        text += '<div class="confirmation-line">3時間後：' +
+            (threeHours === "" ? "未入力" : threeHours + " mg/dL") + '</div>';
+
+        text += '<div class="confirmation-line">18時：トレシーバ 7単位</div>';
+
+        text += '<div class="confirmation-line">夜：' +
+            (dinner === "" ? "未入力" : dinner + " mg/dL") +
+            (dinnerSpecial ? "（外食・丼・揚げ物）" : "") + '</div>';
+
+        text += '<div class="confirmation-line">就寝前：' +
+            (bedtime === "" ? "未入力" : bedtime + " mg/dL") + '</div>';
+
+
+        document.getElementById("confirmationText").innerHTML = text;
+
+        document.getElementById("confirmation").style.display = "block";
+
+        document.getElementById("confirmation").scrollIntoView({
+            behavior: "smooth"
+        });
+
     });
+
 });
 
+
+/* 戻って修正する */
 
 document.getElementById("backButton").addEventListener("click", function() {
 
@@ -464,6 +503,8 @@ document.getElementById("backButton").addEventListener("click", function() {
 
 });
 
+
+/* この内容で判定する */
 
 document.getElementById("calculateButton").addEventListener("click", function() {
 
@@ -476,7 +517,9 @@ document.getElementById("calculateButton").addEventListener("click", function() 
     });
 
 });
+
 </script>
+
 
 </body>
 </html>
