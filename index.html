@@ -536,129 +536,33 @@ function updateAll() {
 
 
 /* =========================
-   入力内容の確認
-   ========================= */
-
-document.querySelectorAll(".confirm-button").forEach(function(button) {
-
-    button.addEventListener("click", function() {
-
-        const confirmation =
-            document.getElementById("confirmation");
-
-        /*
-         * 押した確認ボタンの直後へ
-         * 確認画面を移動する
-         */
-        button.parentNode.insertBefore(
-            confirmation,
-            button.nextSibling
-        );
-
-
-        const morning =
-            document.getElementById("morning").value;
-
-        const lunch =
-            document.getElementById("lunch").value;
-
-        const threeHours =
-            document.getElementById("threeHours").value;
-
-        const dinner =
-            document.getElementById("dinner").value;
-
-        const bedtime =
-            document.getElementById("bedtime").value;
-
-        const lunchSpecial =
-            document.getElementById("lunchSpecial").checked;
-
-        const dinnerSpecial =
-            document.getElementById("dinnerSpecial").checked;
-
-
-        let text = "";
-
-
-        text += '<div class="confirmation-line">朝：' +
-            (morning === "" ? "未入力" : morning + " mg/dL") +
-            '</div>';
-
-
-        text += '<div class="confirmation-line">昼：' +
-            (lunch === "" ? "未入力" : lunch + " mg/dL") +
-            (lunchSpecial ? "（外食・丼・揚げ物）" : "") +
-            '</div>';
-
-
-        text += '<div class="confirmation-line">3時間後：' +
-            (threeHours === "" ? "未入力" : threeHours + " mg/dL") +
-            '</div>';
-
-
-        text += '<div class="confirmation-line">18時：トレシーバ 7単位</div>';
-
-
-        text += '<div class="confirmation-line">夜：' +
-            (dinner === "" ? "未入力" : dinner + " mg/dL") +
-            (dinnerSpecial ? "（外食・丼・揚げ物）" : "") +
-            '</div>';
-
-
-        text += '<div class="confirmation-line">就寝前：' +
-            (bedtime === "" ? "未入力" : bedtime + " mg/dL") +
-            '</div>';
-
-
-        document.getElementById("confirmationText").innerHTML = text;
-
-        confirmation.style.display = "block";
-
-
-        confirmation.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
-    });
-
-});
-
-
-/* =========================
-   戻って修正する
-   ========================= */
-
-document.getElementById("backButton").addEventListener("click", function() {
-
-    document.getElementById("confirmation").style.display = "none";
-
-});
-
-
-/* =========================
-   この内容で判定する
-   ========================= */
-
-document.getElementById("calculateButton").addEventListener("click", function() {
-
-    updateAll();
-
-    document.getElementById("confirmation").style.display = "none";
-
-});
-/* =========================
    入力内容を日付ごとに保存
    ========================= */
 
 const STORAGE_KEY = "bloodSugarData";
 
 
+/* 今日の日付を YYYY-MM-DD で取得 */
+
+function getToday() {
+
+    const now = new Date();
+
+    return now.getFullYear() + "-" +
+        String(now.getMonth() + 1).padStart(2, "0") + "-" +
+        String(now.getDate()).padStart(2, "0");
+}
+
+
+/* =========================
+   入力内容を保存
+   ========================= */
+
 function saveData() {
 
     const data = {
-        date: new Date().toLocaleDateString("ja-JP"),
+
+        date: getToday(),
 
         morning:
             document.getElementById("morning").value,
@@ -682,6 +586,7 @@ function saveData() {
             document.getElementById("dinnerSpecial").checked
     };
 
+
     localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify(data)
@@ -690,7 +595,7 @@ function saveData() {
 
 
 /* =========================
-   保存データを読み込む
+   今日の入力内容を復元
    ========================= */
 
 function loadData() {
@@ -702,16 +607,14 @@ function loadData() {
         return;
     }
 
+
     const data =
         JSON.parse(saved);
 
-    const today =
-        new Date().toLocaleDateString("ja-JP");
 
+    /* 保存された日付と今日の日付を比較 */
 
-    /* 日付が違えば前日のデータを削除 */
-
-    if (data.date !== today) {
+    if (data.date !== getToday()) {
 
         localStorage.removeItem(STORAGE_KEY);
 
@@ -728,7 +631,7 @@ function loadData() {
     }
 
 
-    /* 今日のデータなら復元 */
+    /* 今日なら入力内容を復元 */
 
     document.getElementById("morning").value =
         data.morning || "";
@@ -750,30 +653,42 @@ function loadData() {
 
     document.getElementById("dinnerSpecial").checked =
         data.dinnerSpecial || false;
+
+
+    /* 保存されていた入力から結果も再表示 */
+
+    updateAll();
 }
 
 
 /* =========================
-   入力されたら自動保存
+   数値入力時に自動保存
    ========================= */
 
 document.querySelectorAll('input[type="number"]').forEach(function(input) {
 
     input.addEventListener("input", function() {
+
         saveData();
+
     });
 
 });
 
 
-document.getElementById("lunchSpecial").addEventListener("change", function() {
-    saveData();
-});
+/* =========================
+   チェックボックス変更時に保存
+   ========================= */
 
+document.getElementById("lunchSpecial").addEventListener(
+    "change",
+    saveData
+);
 
-document.getElementById("dinnerSpecial").addEventListener("change", function() {
-    saveData();
-});
+document.getElementById("dinnerSpecial").addEventListener(
+    "change",
+    saveData
+);
 
 
 /* =========================
@@ -796,13 +711,12 @@ setInterval(function() {
         return;
     }
 
+
     const data =
         JSON.parse(saved);
 
-    const today =
-        new Date().toLocaleDateString("ja-JP");
 
-    if (data.date !== today) {
+    if (data.date !== getToday()) {
 
         localStorage.removeItem(STORAGE_KEY);
 
