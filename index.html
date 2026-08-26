@@ -424,8 +424,7 @@ function calculate(type, value, special = false) {
 
 
 function updateAll() {
-    const latestResult =
-        localStorage.getItem("latestBloodSugarResult");
+    
     const morning =
         document.getElementById("morning").value;
 
@@ -551,34 +550,7 @@ function updateAll() {
             '</div>';
 
         bedtimeResult.style.display = "block";
-    /* 最新の判定結果だけ赤字 */
-
-    morningResult.classList.remove("latest-result");
-    lunchResult.classList.remove("latest-result");
-    threeHoursResult.classList.remove("latest-result");
-    dinnerResult.classList.remove("latest-result");
-    bedtimeResult.classList.remove("latest-result");
-
-
-    if (latestResult === "morning") {
-        morningResult.classList.add("latest-result");
-    }
-
-    if (latestResult === "lunch") {
-        lunchResult.classList.add("latest-result");
-    }
-
-    if (latestResult === "threeHours") {
-        threeHoursResult.classList.add("latest-result");
-    }
-
-    if (latestResult === "dinner") {
-        dinnerResult.classList.add("latest-result");
-    }
-
-    if (latestResult === "bedtime") {
-        bedtimeResult.classList.add("latest-result");
-    }
+  
     }
 }
 
@@ -706,13 +678,69 @@ document.getElementById("backButton").addEventListener("click", function() {
 
 document.getElementById("calculateButton").onclick = function() {
 
-    const currentType =
-        document.getElementById("confirmation").dataset.currentType;
+    const confirmation =
+        document.getElementById("confirmation");
 
-    localStorage.setItem(
-        "latestBloodSugarResult",
-        currentType
-    );
+    const currentType =
+        confirmation.dataset.currentType;
+
+
+    /* いったん全部の赤字を解除 */
+
+    document.getElementById("morningResult")
+        .classList.remove("latest-result");
+
+    document.getElementById("lunchResult")
+        .classList.remove("latest-result");
+
+    document.getElementById("threeHoursResult")
+        .classList.remove("latest-result");
+
+    document.getElementById("dinnerResult")
+        .classList.remove("latest-result");
+
+    document.getElementById("bedtimeResult")
+        .classList.remove("latest-result");
+
+
+    /* 判定結果を表示 */
+
+    updateAll();
+
+
+    /* 今回判定した時間帯だけ赤字 */
+
+    if (currentType === "morning") {
+        document.getElementById("morningResult")
+            .classList.add("latest-result");
+    }
+
+    if (currentType === "lunch") {
+        document.getElementById("lunchResult")
+            .classList.add("latest-result");
+    }
+
+    if (currentType === "threeHours") {
+        document.getElementById("threeHoursResult")
+            .classList.add("latest-result");
+    }
+
+    if (currentType === "dinner") {
+        document.getElementById("dinnerResult")
+            .classList.add("latest-result");
+    }
+
+    if (currentType === "bedtime") {
+        document.getElementById("bedtimeResult")
+            .classList.add("latest-result");
+    }
+
+
+    /* 確認画面を消す */
+
+    confirmation.style.display = "none";
+
+};
 
     updateAll();
 
