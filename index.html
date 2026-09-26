@@ -1074,7 +1074,14 @@ function checkTresibaTime() {
         tresibaResult.classList.add(
             "latest-result"
         );
+const tresibaButton =
+    document.querySelector(
+        '.injection-complete[data-type="tresiba"]'
+    );
 
+if (tresibaButton) {
+    tresibaButton.style.display = "block";
+}
         /* 一度だけ移行する */
 
         localStorage.removeItem(
