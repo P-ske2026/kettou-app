@@ -992,117 +992,205 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
         const result =
             document.getElementById(type + "Result");
 
-       if (result) {
-    result.classList.remove("latest-result");
-}
 
-button.style.display = "none";
-button.dataset.completed = "true";
+        /* 現在の結果を黒字にする */
 
-if (type === "morning") {
+        if (result) {
+            result.classList.remove("latest-result");
+        }
 
-    const lunch =
-        document.getElementById("lunch");
 
-    if (lunch) {
-        lunch.focus();
-        lunch.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-    }
+        /* ボタンを消して、完了済みにする */
 
-}
-else if (type === "lunch") {
+        button.style.display = "none";
+        button.dataset.completed = "true";
 
-    const threeHours =
-        document.getElementById("threeHours");
 
-    if (threeHours) {
-        threeHours.focus();
-        threeHours.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-    }
+        /* =========================
+           朝 → 昼
+           ========================= */
 
-}
-else if (type === "threeHours") {
+        if (type === "morning") {
 
-    const threeHoursResult =
-        document.getElementById("threeHoursResult");
+            const lunch =
+                document.getElementById("lunch");
 
-    const tresibaResult =
-        document.getElementById("tresibaResult");
+            if (lunch) {
+                lunch.focus();
+                lunch.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
 
-    /* 3時間後を黒字にする */
+        }
 
-    if (threeHoursResult) {
-        threeHoursResult.classList.remove(
-            "latest-result"
-        );
-    }
 
-    /* トレシーバを赤字にする */
+        /* =========================
+           昼 → 3時間後
+           ========================= */
 
-    if (tresibaResult) {
-        tresibaResult.classList.add(
-            "latest-result"
-        );
-    }
+        else if (type === "lunch") {
 
-    /* 3時間後の時間判定を終了 */
+            const threeHours =
+                document.getElementById("threeHours");
 
-    localStorage.removeItem(
-        "threeHoursJudgedAt"
-    );
+            if (threeHours) {
+                threeHours.focus();
+                threeHours.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
 
-    /* トレシーバの完了ボタンを表示 */
+        }
 
-    const tresibaButton =
-        document.querySelector(
-            '.injection-complete[data-type="tresiba"]'
-        );
 
-    if (tresibaButton) {
-        tresibaButton.style.display = "block";
-    }
+        /* =========================
+           3時間後 → トレシーバ
+           ========================= */
 
-    /* トレシーバへ移動 */
+        else if (type === "threeHours") {
 
-    if (tresibaResult) {
-        tresibaResult.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-    }
+            const threeHoursResult =
+                document.getElementById("threeHoursResult");
 
-}
-else if (type === "tresiba") {
+            const tresibaResult =
+                document.getElementById("tresibaResult");
 
-    const tresibaResult =
-        document.getElementById("tresibaResult");
 
-    if (tresibaResult) {
-        tresibaResult.classList.remove(
-            "latest-result"
-        );
-    }
+            /* 3時間後を黒字にする */
 
-    const dinner =
-        document.getElementById("dinner");
+            if (threeHoursResult) {
+                threeHoursResult.classList.remove(
+                    "latest-result"
+                );
+            }
 
-    if (dinner) {
-        dinner.focus();
-        dinner.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-    }
 
-}
+            /* トレシーバを赤字にする */
 
-});
+            if (tresibaResult) {
+                tresibaResult.classList.add(
+                    "latest-result"
+                );
+            }
+
+
+            /* 3時間後の時間判定を終了 */
+
+            localStorage.removeItem(
+                "threeHoursJudgedAt"
+            );
+
+
+            /* トレシーバの完了ボタンを表示 */
+
+            const tresibaButton =
+                document.querySelector(
+                    '.injection-complete[data-type="tresiba"]'
+                );
+
+            if (tresibaButton) {
+                tresibaButton.style.display = "block";
+            }
+
+
+            /* トレシーバへ移動 */
+
+            if (tresibaResult) {
+                tresibaResult.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+        }
+
+
+        /* =========================
+           トレシーバ → 夜
+           ========================= */
+
+        else if (type === "tresiba") {
+
+            const tresibaResult =
+                document.getElementById("tresibaResult");
+
+
+            /* トレシーバを黒字にする */
+
+            if (tresibaResult) {
+                tresibaResult.classList.remove(
+                    "latest-result"
+                );
+            }
+
+
+            /* 夜へ移動 */
+
+            const dinner =
+                document.getElementById("dinner");
+
+            if (dinner) {
+                dinner.focus();
+                dinner.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+        }
+
+
+        /* =========================
+           夜 → 就寝前
+           ========================= */
+
+        else if (type === "dinner") {
+
+            const bedtime =
+                document.getElementById("bedtime");
+
+            if (bedtime) {
+                bedtime.focus();
+                bedtime.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+        }
+
+
+        /* =========================
+           就寝前 → 1日終了
+           ========================= */
+
+        else if (type === "bedtime") {
+
+            /* 今日のデータを消去 */
+
+            localStorage.removeItem(
+                STORAGE_KEY
+            );
+
+            localStorage.removeItem(
+                LATEST_KEY
+            );
+
+            localStorage.removeItem(
+                "threeHoursJudgedAt"
+            );
+
+
+            /* ページを再読み込み */
+
+            location.reload();
+
+        }
+
+    });
 
 });
 
