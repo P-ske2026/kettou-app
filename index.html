@@ -1268,7 +1268,39 @@ document.getElementById("calculateButton").addEventListener(
             );
 
         }
+/* 就寝前を判定した時刻を保存 */
 
+if (currentType === "bedtime") {
+
+    const bedtimeResult =
+        document.getElementById("bedtimeResult");
+
+    const doseElement =
+        bedtimeResult.querySelector(".result-dose");
+
+    if (doseElement) {
+
+        const dose =
+            parseInt(
+                doseElement.textContent.trim(),
+                10
+            );
+
+        if (dose === 0) {
+
+            localStorage.setItem(
+                "bedtimeJudgedAt",
+                new Date().toISOString()
+            );
+
+        } else {
+
+            localStorage.removeItem(
+                "bedtimeJudgedAt"
+            );
+        }
+    }
+}
 
         /* 入力内容を保存 */
 
@@ -1368,6 +1400,54 @@ setInterval(function() {
 /* ページを開いた直後にも確認 */
 
 checkTresibaTime();
+   /* =========================
+   就寝前0単位の自動終了
+   テスト：30秒
+   ========================= */
+
+function checkBedtimeReset() {
+
+    const judgedAt =
+        localStorage.getItem("bedtimeJudgedAt");
+
+    if (!judgedAt) {
+        return;
+    }
+
+    const elapsed =
+        new Date() - new Date(judgedAt);
+
+    if (elapsed >= 30 * 1000) {
+
+        localStorage.removeItem(
+            STORAGE_KEY
+        );
+
+        localStorage.removeItem(
+            LATEST_KEY
+        );
+
+        localStorage.removeItem(
+            "bedtimeJudgedAt"
+        );
+
+        location.reload();
+    }
+}
+
+
+/* 5秒ごとに確認 */
+
+setInterval(function() {
+
+    checkBedtimeReset();
+
+}, 5000);
+
+
+/* ページを開いた直後にも確認 */
+
+checkBedtimeReset();
 /* =========================
    数値入力時に自動保存
    ========================= */
