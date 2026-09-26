@@ -258,6 +258,7 @@
         <div class="result" id="lunchResult" style="display:none;">
             血糖値を入力してください
         </div>
+       <button class="injection-complete" data-type="lunch" style="display:none;">注射完了</button>
     </div>
 
 
@@ -524,18 +525,20 @@ function showResult(type, value, special) {
         '</div>';
 
     result.style.display = "block";
-if (type === "morning") {
+if (type === "morning" || type === "lunch") {
+
     const button =
         document.querySelector(
-            '.injection-complete[data-type="morning"]'
+            '.injection-complete[data-type="' +
+            type +
+            '"]'
         );
 
     if (button) {
         button.style.display = "block";
     }
-
 }
-
+}
 
 /* =========================
    最新の結果を赤字にする
@@ -834,6 +837,38 @@ document.querySelectorAll(".confirm-button").forEach(function(button) {
             block: "center"
         });
 
+    });
+
+});
+document.querySelectorAll(".injection-complete").forEach(function(button) {
+
+    button.addEventListener("click", function() {
+
+        const type =
+            button.dataset.type;
+
+        const result =
+            document.getElementById(type + "Result");
+
+        if (result) {
+            result.classList.remove("latest-result");
+        }
+
+        button.style.display = "none";
+if (type === "morning") {
+
+    const lunch =
+        document.getElementById("lunch");
+
+    if (lunch) {
+        lunch.focus();
+        lunch.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+
+}
     });
 
 });
