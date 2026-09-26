@@ -977,6 +977,15 @@ else if (type === "threeHours") {
         tresibaButton.style.display = "block";
     }
 
+    /* トレシーバへ移動 */
+
+    if (tresibaResult) {
+        tresibaResult.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+
 }
 else if (type === "tresiba") {
 
