@@ -936,6 +936,48 @@ else if (type === "lunch") {
     }
 
 }
+lse if (type === "threeHours") {
+
+    const threeHoursResult =
+        document.getElementById("threeHoursResult");
+
+    const tresibaResult =
+        document.getElementById("tresibaResult");
+
+    /* 3時間後を黒字にする */
+
+    if (threeHoursResult) {
+        threeHoursResult.classList.remove(
+            "latest-result"
+        );
+    }
+
+    /* トレシーバを赤字にする */
+
+    if (tresibaResult) {
+        tresibaResult.classList.add(
+            "latest-result"
+        );
+    }
+
+    /* 3時間後の時間判定を終了 */
+
+    localStorage.removeItem(
+        "threeHoursJudgedAt"
+    );
+
+    /* トレシーバの完了ボタンを表示 */
+
+    const tresibaButton =
+        document.querySelector(
+            '.injection-complete[data-type="tresiba"]'
+        );
+
+    if (tresibaButton) {
+        tresibaButton.style.display = "block";
+    }
+
+}
 else if (type === "tresiba") {
 
     const tresibaResult =
