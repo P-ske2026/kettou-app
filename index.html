@@ -870,6 +870,7 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
 
 button.style.display = "none";
 button.dataset.completed = "true";
+
 if (type === "morning") {
 
     const lunch =
@@ -882,6 +883,8 @@ if (type === "morning") {
             block: "center"
         });
     }
+
+}
 else if (type === "lunch") {
 
     const threeHours =
@@ -894,10 +897,10 @@ else if (type === "lunch") {
             block: "center"
         });
     }
-}
+
 }
 
-    });
+});
 
 });
 
