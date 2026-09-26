@@ -1002,24 +1002,41 @@ function checkTresibaTime() {
     const tresibaResult =
         document.querySelector("#tresibaResult");
 
-
-    if (!judgedAt ||
+    if (
+        !judgedAt ||
         !threeHoursResult ||
-        !tresibaResult) {
-
+        !tresibaResult
+    ) {
         return;
     }
-
 
     const elapsed =
         new Date() - new Date(judgedAt);
 
+    /*
+     * 3時間後が0単位の場合、
+     * 判定から10秒後にトレシーバへ移行
+     */
 
-    /* 3時間後の判定から1分経過 */
+    const doseElement =
+        threeHoursResult.querySelector(".result-dose");
 
-    if (elapsed >= 60 * 1000) {
+    if (!doseElement) {
+        return;
+    }
 
-        /* 3時間後を黒字 */
+    const doseText =
+        doseElement.textContent.trim();
+
+    const dose =
+        parseInt(doseText, 10);
+
+    if (
+        dose === 0 &&
+        elapsed >= 10 * 1000
+    ) {
+
+        /* 3時間後を黒字にする */
 
         threeHoursResult.classList.remove(
             "latest-result"
@@ -1027,12 +1044,18 @@ function checkTresibaTime() {
 
         threeHoursResult.style.color = "";
 
+        /* トレシーバを赤字にする */
 
+        tresibaResult.classList.add(
+            "latest-result"
+        );
 
+        /* 一度だけ移行する */
 
-
+        localStorage.removeItem(
+            "threeHoursJudgedAt"
+        );
     }
-
 }
 
 
