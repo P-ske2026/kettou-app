@@ -901,6 +901,29 @@ else if (type === "lunch") {
     }
 
 }
+else if (type === "tresiba") {
+
+    const tresibaResult =
+        document.getElementById("tresibaResult");
+
+    if (tresibaResult) {
+        tresibaResult.classList.remove(
+            "latest-result"
+        );
+    }
+
+    const dinner =
+        document.getElementById("dinner");
+
+    if (dinner) {
+        dinner.focus();
+        dinner.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+
+}
 
 });
 
