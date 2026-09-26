@@ -558,6 +558,37 @@ if (type === "morning" || type === "lunch") {
         button.style.display = "block";
     }
 }
+
+
+/* 3時間後は1単位以上なら注射完了ボタンを表示 */
+
+if (type === "threeHours") {
+
+    const button =
+        document.querySelector(
+            '.injection-complete[data-type="threeHours"]'
+        );
+
+    const doseElement =
+        result.querySelector(".result-dose");
+
+    if (
+        button &&
+        doseElement &&
+        button.dataset.completed !== "true"
+    ) {
+
+        const dose =
+            parseInt(
+                doseElement.textContent.trim(),
+                10
+            );
+
+        if (dose >= 1) {
+            button.style.display = "block";
+        }
+    }
+}
 }
 
 /* =========================
