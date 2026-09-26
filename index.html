@@ -148,7 +148,21 @@
         font-size: 28px;
         font-weight: bold;
     }
-
+.injection-complete {
+     width: 33%;
+    min-width: 150px;
+    height: 110px;
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    border: none;
+    border-radius: 12px;
+    background: #2e8b57;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+}
     .confirmation {
         background: white;
         border-radius: 18px;
@@ -234,7 +248,7 @@
             血糖値を入力してください
         </div>
     </div>
-
+    <button class="injection-complete" data-type="morning" style="display:none;">注射完了</button>
 
     <!-- 昼 -->
     <div class="item">
@@ -258,6 +272,7 @@
         <div class="result" id="lunchResult" style="display:none;">
             血糖値を入力してください
         </div>
+       <button class="injection-complete" data-type="lunch" style="display:none;">注射完了</button>
     </div>
 
 
@@ -273,9 +288,13 @@
             入力内容を確認
         </button>
 
-        <div class="result" id="threeHoursResult" style="display:none;">
-            血糖値を入力してください
-        </div>
+       <div class="result" id="threeHoursResult" style="display:none;">
+    血糖値を入力してください
+</div>
+
+<button class="injection-complete" data-type="threeHours" style="display:none;">
+    注射完了
+</button>
     </div>
 
 
@@ -287,6 +306,8 @@
         トレシーバ<br>
         <span class="dose-number">7単位</span>
     </div>
+
+   <button class="injection-complete" data-type="tresiba" style="display:none;">注射完了</button>
 </div>
 
 
@@ -309,9 +330,13 @@
             入力内容を確認
         </button>
 
-        <div class="result" id="dinnerResult" style="display:none;">
-            血糖値を入力してください
-        </div>
+      <div class="result" id="dinnerResult" style="display:none;">
+    血糖値を入力してください
+</div>
+
+<button class="injection-complete" data-type="dinner" style="display:none;">
+    注射完了
+</button>
     </div>
 
 
@@ -327,9 +352,13 @@
             入力内容を確認
         </button>
 
-        <div class="result" id="bedtimeResult" style="display:none;">
-            血糖値を入力してください
-        </div>
+       <div class="result" id="bedtimeResult" style="display:none;">
+    血糖値を入力してください
+</div>
+
+<button class="injection-complete" data-type="bedtime" style="display:none;">
+    注射完了
+</button>
     </div>
 
 
@@ -475,7 +504,6 @@ function updateAll() {
     );
 }
 
-
 function showResult(type, value, special) {
 
     const result =
@@ -524,9 +552,133 @@ function showResult(type, value, special) {
         '</div>';
 
     result.style.display = "block";
+
+
+    /* =========================
+       朝・昼
+       ========================= */
+
+    if (type === "morning" || type === "lunch") {
+
+        const button =
+            document.querySelector(
+                '.injection-complete[data-type="' +
+                type +
+                '"]'
+            );
+
+        if (
+            button &&
+            button.dataset.completed !== "true"
+        ) {
+            button.style.display = "block";
+        }
+    }
+
+
+    /* =========================
+       3時間後
+       1単位以上なら完了ボタン
+       ========================= */
+
+    if (type === "threeHours") {
+
+        const button =
+            document.querySelector(
+                '.injection-complete[data-type="threeHours"]'
+            );
+
+        const doseElement =
+            result.querySelector(".result-dose");
+
+        if (
+            button &&
+            doseElement &&
+            button.dataset.completed !== "true"
+        ) {
+
+            const dose =
+                parseInt(
+                    doseElement.textContent.trim(),
+                    10
+                );
+
+            if (dose >= 1) {
+                button.style.display = "block";
+            }
+        }
+    }
+
+
+    /* =========================
+       夜
+       1単位以上なら完了ボタン
+       ========================= */
+
+    if (type === "dinner") {
+
+        const button =
+            document.querySelector(
+                '.injection-complete[data-type="dinner"]'
+            );
+
+        const doseElement =
+            result.querySelector(".result-dose");
+
+        if (
+            button &&
+            doseElement &&
+            button.dataset.completed !== "true"
+        ) {
+
+            const dose =
+                parseInt(
+                    doseElement.textContent.trim(),
+                    10
+                );
+
+            if (dose >= 1) {
+                button.style.display = "block";
+            }
+        }
+    }
+
+
+    /* =========================
+       就寝前
+       1単位以上なら完了ボタン
+       ========================= */
+
+    if (type === "bedtime") {
+
+        const button =
+            document.querySelector(
+                '.injection-complete[data-type="bedtime"]'
+            );
+
+        const doseElement =
+            result.querySelector(".result-dose");
+
+        if (
+            button &&
+            doseElement &&
+            button.dataset.completed !== "true"
+        ) {
+
+            const dose =
+                parseInt(
+                    doseElement.textContent.trim(),
+                    10
+                );
+
+            if (dose >= 1) {
+                button.style.display = "block";
+            }
+        }
+       
+    }
+
 }
-
-
 /* =========================
    最新の結果を赤字にする
    ========================= */
@@ -827,6 +979,217 @@ document.querySelectorAll(".confirm-button").forEach(function(button) {
     });
 
 });
+document.querySelectorAll(".injection-complete").forEach(function(button) {
+
+    button.addEventListener("click", function() {
+
+        const type =
+            button.dataset.type;
+
+        const result =
+            document.getElementById(type + "Result");
+
+
+        /* 現在の結果を黒字にする */
+
+        if (result) {
+            result.classList.remove("latest-result");
+        }
+
+
+        /* ボタンを消して、完了済みにする */
+
+        button.style.display = "none";
+        button.dataset.completed = "true";
+
+
+        /* =========================
+           朝 → 昼
+           ========================= */
+
+        if (type === "morning") {
+
+            const lunch =
+                document.getElementById("lunch");
+
+            if (lunch) {
+                lunch.focus();
+                lunch.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+        }
+
+
+        /* =========================
+           昼 → 3時間後
+           ========================= */
+
+        else if (type === "lunch") {
+
+            const threeHours =
+                document.getElementById("threeHours");
+
+            if (threeHours) {
+                threeHours.focus();
+                threeHours.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+        }
+
+
+        /* =========================
+           3時間後 → トレシーバ
+           ========================= */
+
+        else if (type === "threeHours") {
+
+            const threeHoursResult =
+                document.getElementById("threeHoursResult");
+
+            const tresibaResult =
+                document.getElementById("tresibaResult");
+
+
+            /* 3時間後を黒字にする */
+
+            if (threeHoursResult) {
+                threeHoursResult.classList.remove(
+                    "latest-result"
+                );
+            }
+
+
+            /* トレシーバを赤字にする */
+
+            if (tresibaResult) {
+                tresibaResult.classList.add(
+                    "latest-result"
+                );
+            }
+
+
+            /* 3時間後の時間判定を終了 */
+
+            localStorage.removeItem(
+                "threeHoursJudgedAt"
+            );
+
+
+            /* トレシーバの完了ボタンを表示 */
+
+            const tresibaButton =
+                document.querySelector(
+                    '.injection-complete[data-type="tresiba"]'
+                );
+
+            if (tresibaButton) {
+                tresibaButton.style.display = "block";
+            }
+
+
+            /* トレシーバへ移動 */
+
+            if (tresibaResult) {
+                tresibaResult.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+        }
+
+
+        /* =========================
+           トレシーバ → 夜
+           ========================= */
+
+        else if (type === "tresiba") {
+
+            const tresibaResult =
+                document.getElementById("tresibaResult");
+
+
+            /* トレシーバを黒字にする */
+
+            if (tresibaResult) {
+                tresibaResult.classList.remove(
+                    "latest-result"
+                );
+            }
+
+
+            /* 夜へ移動 */
+
+            const dinner =
+                document.getElementById("dinner");
+
+            if (dinner) {
+                dinner.focus();
+                dinner.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+        }
+
+
+        /* =========================
+           夜 → 就寝前
+           ========================= */
+
+        else if (type === "dinner") {
+
+            const bedtime =
+                document.getElementById("bedtime");
+
+            if (bedtime) {
+                bedtime.focus();
+                bedtime.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+        }
+
+
+        /* =========================
+           就寝前 → 1日終了
+           ========================= */
+
+        else if (type === "bedtime") {
+
+            /* 今日のデータを消去 */
+
+            localStorage.removeItem(
+                STORAGE_KEY
+            );
+
+            localStorage.removeItem(
+                LATEST_KEY
+            );
+
+            localStorage.removeItem(
+                "threeHoursJudgedAt"
+            );
+
+
+            /* ページを再読み込み */
+
+            location.reload();
+
+        }
+
+    });
+
+});
 
 
 /* =========================
@@ -878,16 +1241,7 @@ document.getElementById("calculateButton").addEventListener(
             currentType
         );
 
-       /* 3時間後の判定時刻を保存 */
 
-if (currentType === "threeHours") {
-
-    localStorage.setItem(
-        "threeHoursJudgedAt",
-        new Date().toISOString()
-    );
-
-}
 
         /* 3時間後を判定した時刻を保存 */
 
@@ -911,7 +1265,39 @@ if (currentType === "threeHours") {
             );
 
         }
+/* 就寝前を判定した時刻を保存 */
 
+if (currentType === "bedtime") {
+
+    const bedtimeResult =
+        document.getElementById("bedtimeResult");
+
+    const doseElement =
+        bedtimeResult.querySelector(".result-dose");
+
+    if (doseElement) {
+
+        const dose =
+            parseInt(
+                doseElement.textContent.trim(),
+                10
+            );
+
+        if (dose === 0) {
+
+            localStorage.setItem(
+                "bedtimeJudgedAt",
+                new Date().toISOString()
+            );
+
+        } else {
+
+            localStorage.removeItem(
+                "bedtimeJudgedAt"
+            );
+        }
+    }
+}
 
         /* 入力内容を保存 */
 
@@ -935,24 +1321,41 @@ function checkTresibaTime() {
     const tresibaResult =
         document.querySelector("#tresibaResult");
 
-
-    if (!judgedAt ||
+    if (
+        !judgedAt ||
         !threeHoursResult ||
-        !tresibaResult) {
-
+        !tresibaResult
+    ) {
         return;
     }
-
 
     const elapsed =
         new Date() - new Date(judgedAt);
 
+    /*
+     * 3時間後が0単位の場合、
+     * 判定から15分後にトレシーバへ移行
+     */
 
-    /* 3時間後の判定から1分経過 */
+    const doseElement =
+        threeHoursResult.querySelector(".result-dose");
 
-    if (elapsed >= 60 * 1000) {
+    if (!doseElement) {
+        return;
+    }
 
-        /* 3時間後を黒字 */
+    const doseText =
+        doseElement.textContent.trim();
+
+    const dose =
+        parseInt(doseText, 10);
+
+    if (
+        dose === 0 &&
+        elapsed >= 15 * 60 * 1000
+    ) {
+
+        /* 3時間後を黒字にする */
 
         threeHoursResult.classList.remove(
             "latest-result"
@@ -960,32 +1363,25 @@ function checkTresibaTime() {
 
         threeHoursResult.style.color = "";
 
+        /* トレシーバを赤字にする */
 
-        /* トレシーバを赤字 */
-
-        tresibaResult.style.setProperty(
-            "color",
-            "red",
-            "important"
+        tresibaResult.classList.add(
+            "latest-result"
         );
+const tresibaButton =
+    document.querySelector(
+        '.injection-complete[data-type="tresiba"]'
+    );
 
-        /* 7単位の文字も確実に赤字 */
+if (tresibaButton) {
+    tresibaButton.style.display = "block";
+}
+        /* 一度だけ移行する */
 
-        const doseNumber =
-            tresibaResult.querySelector(".dose-number");
-
-        if (doseNumber) {
-
-            doseNumber.style.setProperty(
-                "color",
-                "red",
-                "important"
-            );
-
-        }
-
+        localStorage.removeItem(
+            "threeHoursJudgedAt"
+        );
     }
-
 }
 
 
@@ -1001,6 +1397,54 @@ setInterval(function() {
 /* ページを開いた直後にも確認 */
 
 checkTresibaTime();
+   /* =========================
+   就寝前0単位の自動終了
+    15分
+   ========================= */
+
+function checkBedtimeReset() {
+
+    const judgedAt =
+        localStorage.getItem("bedtimeJudgedAt");
+
+    if (!judgedAt) {
+        return;
+    }
+
+    const elapsed =
+        new Date() - new Date(judgedAt);
+
+    if (elapsed >= 15 * 60 * 1000) {
+
+        localStorage.removeItem(
+            STORAGE_KEY
+        );
+
+        localStorage.removeItem(
+            LATEST_KEY
+        );
+
+        localStorage.removeItem(
+            "bedtimeJudgedAt"
+        );
+
+        location.reload();
+    }
+}
+
+
+/* 5秒ごとに確認 */
+
+setInterval(function() {
+
+    checkBedtimeReset();
+
+}, 5000);
+
+
+/* ページを開いた直後にも確認 */
+
+checkBedtimeReset();
 /* =========================
    数値入力時に自動保存
    ========================= */
