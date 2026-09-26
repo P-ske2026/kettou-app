@@ -878,16 +878,7 @@ document.getElementById("calculateButton").addEventListener(
             currentType
         );
 
-       /* 3時間後の判定時刻を保存 */
 
-if (currentType === "threeHours") {
-
-    localStorage.setItem(
-        "threeHoursJudgedAt",
-        new Date().toISOString()
-    );
-
-}
 
         /* 3時間後を判定した時刻を保存 */
 
@@ -961,28 +952,8 @@ function checkTresibaTime() {
         threeHoursResult.style.color = "";
 
 
-        /* トレシーバを赤字 */
 
-        tresibaResult.style.setProperty(
-            "color",
-            "red",
-            "important"
-        );
 
-        /* 7単位の文字も確実に赤字 */
-
-        const doseNumber =
-            tresibaResult.querySelector(".dose-number");
-
-        if (doseNumber) {
-
-            doseNumber.style.setProperty(
-                "color",
-                "red",
-                "important"
-            );
-
-        }
 
     }
 
