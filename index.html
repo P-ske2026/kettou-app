@@ -1334,7 +1334,7 @@ function checkTresibaTime() {
 
     /*
      * 3時間後が0単位の場合、
-     * 判定から10秒後にトレシーバへ移行
+     * 判定から15分後にトレシーバへ移行
      */
 
     const doseElement =
@@ -1352,7 +1352,7 @@ function checkTresibaTime() {
 
     if (
         dose === 0 &&
-        elapsed >= 10 * 1000
+        elapsed >= 15 * 60 * 1000
     ) {
 
         /* 3時間後を黒字にする */
@@ -1399,7 +1399,7 @@ setInterval(function() {
 checkTresibaTime();
    /* =========================
    就寝前0単位の自動終了
-   テスト：30秒
+    15分
    ========================= */
 
 function checkBedtimeReset() {
@@ -1414,7 +1414,7 @@ function checkBedtimeReset() {
     const elapsed =
         new Date() - new Date(judgedAt);
 
-    if (elapsed >= 30 * 1000) {
+    if (elapsed >= 15 * 60 * 1000) {
 
         localStorage.removeItem(
             STORAGE_KEY
