@@ -881,8 +881,21 @@ if (type === "morning") {
             block: "center"
         });
     }
+else if (type === "lunch") {
 
+    const threeHours =
+        document.getElementById("threeHours");
+
+    if (threeHours) {
+        threeHours.focus();
+        threeHours.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
 }
+}
+
     });
 
 });
