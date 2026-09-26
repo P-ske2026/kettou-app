@@ -548,7 +548,7 @@ if (type === "morning" || type === "lunch") {
             '"]'
         );
 
-    if (button) {
+    if (button && button.dataset.completed !== "true") {
         button.style.display = "block";
     }
 }
@@ -864,11 +864,12 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
         const result =
             document.getElementById(type + "Result");
 
-        if (result) {
-            result.classList.remove("latest-result");
-        }
+       if (result) {
+    result.classList.remove("latest-result");
+}
 
-        button.style.display = "none";
+button.style.display = "none";
+button.dataset.completed = "true";
 if (type === "morning") {
 
     const lunch =
