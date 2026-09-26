@@ -330,9 +330,13 @@
             入力内容を確認
         </button>
 
-        <div class="result" id="dinnerResult" style="display:none;">
-            血糖値を入力してください
-        </div>
+      <div class="result" id="dinnerResult" style="display:none;">
+    血糖値を入力してください
+</div>
+
+<button class="injection-complete" data-type="dinner" style="display:none;">
+    注射完了
+</button>
     </div>
 
 
@@ -348,9 +352,13 @@
             入力内容を確認
         </button>
 
-        <div class="result" id="bedtimeResult" style="display:none;">
-            血糖値を入力してください
-        </div>
+       <div class="result" id="bedtimeResult" style="display:none;">
+    血糖値を入力してください
+</div>
+
+<button class="injection-complete" data-type="bedtime" style="display:none;">
+    注射完了
+</button>
     </div>
 
 
@@ -496,7 +504,6 @@ function updateAll() {
     );
 }
 
-
 function showResult(type, value, special) {
 
     const result =
@@ -545,49 +552,133 @@ function showResult(type, value, special) {
         '</div>';
 
     result.style.display = "block";
-if (type === "morning" || type === "lunch") {
-
-    const button =
-        document.querySelector(
-            '.injection-complete[data-type="' +
-            type +
-            '"]'
-        );
-
-    if (button && button.dataset.completed !== "true") {
-        button.style.display = "block";
-    }
-}
 
 
-/* 3時間後は1単位以上なら注射完了ボタンを表示 */
+    /* =========================
+       朝・昼
+       ========================= */
 
-if (type === "threeHours") {
+    if (type === "morning" || type === "lunch") {
 
-    const button =
-        document.querySelector(
-            '.injection-complete[data-type="threeHours"]'
-        );
-
-    const doseElement =
-        result.querySelector(".result-dose");
-
-    if (
-        button &&
-        doseElement &&
-        button.dataset.completed !== "true"
-    ) {
-
-        const dose =
-            parseInt(
-                doseElement.textContent.trim(),
-                10
+        const button =
+            document.querySelector(
+                '.injection-complete[data-type="' +
+                type +
+                '"]'
             );
 
-        if (dose >= 1) {
+        if (
+            button &&
+            button.dataset.completed !== "true"
+        ) {
             button.style.display = "block";
         }
     }
+
+
+    /* =========================
+       3時間後
+       1単位以上なら完了ボタン
+       ========================= */
+
+    if (type === "threeHours") {
+
+        const button =
+            document.querySelector(
+                '.injection-complete[data-type="threeHours"]'
+            );
+
+        const doseElement =
+            result.querySelector(".result-dose");
+
+        if (
+            button &&
+            doseElement &&
+            button.dataset.completed !== "true"
+        ) {
+
+            const dose =
+                parseInt(
+                    doseElement.textContent.trim(),
+                    10
+                );
+
+            if (dose >= 1) {
+                button.style.display = "block";
+            }
+        }
+    }
+
+
+    /* =========================
+       夜
+       1単位以上なら完了ボタン
+       ========================= */
+
+    if (type === "dinner") {
+
+        const button =
+            document.querySelector(
+                '.injection-complete[data-type="dinner"]'
+            );
+
+        const doseElement =
+            result.querySelector(".result-dose");
+
+        if (
+            button &&
+            doseElement &&
+            button.dataset.completed !== "true"
+        ) {
+
+            const dose =
+                parseInt(
+                    doseElement.textContent.trim(),
+                    10
+                );
+
+            if (dose >= 1) {
+                button.style.display = "block";
+            }
+        }
+    }
+
+
+    /* =========================
+       就寝前
+       1単位以上なら完了ボタン
+       ========================= */
+
+    if (type === "bedtime") {
+
+        const button =
+            document.querySelector(
+                '.injection-complete[data-type="bedtime"]'
+            );
+
+        const doseElement =
+            result.querySelector(".result-dose");
+
+        if (
+            button &&
+            doseElement &&
+            button.dataset.completed !== "true"
+        ) {
+
+            const dose =
+                parseInt(
+                    doseElement.textContent.trim(),
+                    10
+                );
+
+            if (dose >= 1) {
+                button.style.display = "block";
+            }
+        }
+    }
+
+}
+
 }
 }
 
