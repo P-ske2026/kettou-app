@@ -524,6 +524,16 @@ function showResult(type, value, special) {
         '</div>';
 
     result.style.display = "block";
+if (type === "morning") {
+    const button =
+        document.querySelector(
+            '.injection-complete[data-type="morning"]'
+        );
+
+    if (button) {
+        button.style.display = "block";
+    }
+
 }
 
 
