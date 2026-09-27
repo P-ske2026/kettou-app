@@ -755,8 +755,74 @@ async function sendLineNotification(data) {
         return false;
     }
 }
+/* =========================
+   インスリン量を取得
+   ========================= */
 
-function getToday() {
+function getDose(type) {
+
+    const result =
+        document.getElementById(type + "Result");
+
+    if (!result) {
+        return null;
+    }
+
+    const doseElement =
+        result.querySelector(".result-dose");
+
+    if (!doseElement) {
+        return null;
+    }
+
+    const match =
+        doseElement.textContent.match(/\d+/);
+
+    if (!match) {
+        return null;
+    }
+
+    return Number(match[0]);
+}
+ /* =========================
+    1日分のLINE通知データ
+    ========================= */
+
+function buildDailySummaryPayload() {
+
+    return {
+
+        type: "dailySummary",
+
+        morning: {
+            bg: document.getElementById("morning").value,
+            dose: getDose("morning")
+        },
+
+        lunch: {
+            bg: document.getElementById("lunch").value,
+            dose: getDose("lunch"),
+            special: document.getElementById("lunchSpecial").checked
+        },
+
+        threeHours: {
+            bg: document.getElementById("threeHours").value,
+            dose: getDose("threeHours")
+        },
+
+        dinner: {
+            bg: document.getElementById("dinner").value,
+            dose: getDose("dinner"),
+            special: document.getElementById("dinnerSpecial").checked
+        },
+
+        bedtime: {
+            bg: document.getElementById("bedtime").value,
+            dose: getDose("bedtime")
+        }
+    };
+}
+   function getToday() {
 
     const now = new Date();
 
