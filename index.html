@@ -1118,7 +1118,11 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
            ========================= */
 
         if (type === "morning") {
-
+sendLineNotification({
+    type: "morning",
+    bg: document.getElementById("morning").value,
+    dose: getDose("morning")
+});
             const lunch =
                 document.getElementById("lunch");
 
@@ -1138,7 +1142,12 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
            ========================= */
 
         else if (type === "lunch") {
-
+sendLineNotification({
+    type: "lunch",
+    bg: document.getElementById("lunch").value,
+    dose: getDose("lunch"),
+    special: document.getElementById("lunchSpecial").checked
+});
             const threeHours =
                 document.getElementById("threeHours");
 
@@ -1158,7 +1167,11 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
            ========================= */
 
         else if (type === "threeHours") {
-
+sendLineNotification({
+    type: "threeHours",
+    bg: document.getElementById("threeHours").value,
+    dose: getDose("threeHours")
+});
             const threeHoursResult =
                 document.getElementById("threeHoursResult");
 
@@ -1220,7 +1233,9 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
            ========================= */
 
         else if (type === "tresiba") {
-
+sendLineNotification({
+    type: "tresiba"
+});
             const tresibaResult =
                 document.getElementById("tresibaResult");
 
@@ -1255,7 +1270,12 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
            ========================= */
 
         else if (type === "dinner") {
-
+sendLineNotification({
+    type: "dinner",
+    bg: document.getElementById("dinner").value,
+    dose: getDose("dinner"),
+    special: document.getElementById("dinnerSpecial").checked
+});
             const bedtime =
                 document.getElementById("bedtime");
 
