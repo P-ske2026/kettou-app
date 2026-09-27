@@ -710,9 +710,119 @@ function setLatestResult(type) {
 
 const STORAGE_KEY = "bloodSugarData";
 const LATEST_KEY = "latestBloodSugarResult";
+/* =========================
+   LINE通知
+   ========================= */
 
+async function sendLineNotification(data) {
 
-function getToday() {
+    try {
+
+        const response = await fetch(
+            "https://kettou-line.yts-bloom-style.workers.dev/notify",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(data)
+            }
+        );
+
+        if (!response.ok) {
+
+            console.error(
+                "LINE通知エラー:",
+                await response.text()
+            );
+
+            return false;
+        }
+
+        console.log("LINE通知送信成功");
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "LINE通知通信エラー:",
+            error
+        );
+
+        return false;
+    }
+}
+/* =========================
+   インスリン量を取得
+   ========================= */
+
+function getDose(type) {
+
+    const result =
+        document.getElementById(type + "Result");
+
+    if (!result) {
+        return null;
+    }
+
+    const doseElement =
+        result.querySelector(".result-dose");
+
+    if (!doseElement) {
+        return null;
+    }
+
+    const match =
+        doseElement.textContent.match(/\d+/);
+
+    if (!match) {
+        return null;
+    }
+
+    return Number(match[0]);
+}
+ /* =========================
+    1日分のLINE通知データ
+    ========================= */
+
+function buildDailySummaryPayload() {
+
+    return {
+
+        type: "dailySummary",
+
+        morning: {
+            bg: document.getElementById("morning").value,
+            dose: getDose("morning")
+        },
+
+        lunch: {
+            bg: document.getElementById("lunch").value,
+            dose: getDose("lunch"),
+            special: document.getElementById("lunchSpecial").checked
+        },
+
+        threeHours: {
+            bg: document.getElementById("threeHours").value,
+            dose: getDose("threeHours")
+        },
+
+        dinner: {
+            bg: document.getElementById("dinner").value,
+            dose: getDose("dinner"),
+            special: document.getElementById("dinnerSpecial").checked
+        },
+
+        bedtime: {
+            bg: document.getElementById("bedtime").value,
+            dose: getDose("bedtime")
+        }
+    };
+}
+   function getToday() {
 
     const now = new Date();
 
@@ -981,8 +1091,7 @@ document.querySelectorAll(".confirm-button").forEach(function(button) {
 });
 document.querySelectorAll(".injection-complete").forEach(function(button) {
 
-    button.addEventListener("click", function() {
-
+    button.addEventListener("click", async function() {
         const type =
             button.dataset.type;
 
@@ -1008,7 +1117,11 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
            ========================= */
 
         if (type === "morning") {
-
+sendLineNotification({
+    type: "morning",
+    bg: document.getElementById("morning").value,
+    dose: getDose("morning")
+});
             const lunch =
                 document.getElementById("lunch");
 
@@ -1028,7 +1141,12 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
            ========================= */
 
         else if (type === "lunch") {
-
+sendLineNotification({
+    type: "lunch",
+    bg: document.getElementById("lunch").value,
+    dose: getDose("lunch"),
+    special: document.getElementById("lunchSpecial").checked
+});
             const threeHours =
                 document.getElementById("threeHours");
 
@@ -1048,7 +1166,11 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
            ========================= */
 
         else if (type === "threeHours") {
-
+sendLineNotification({
+    type: "threeHours",
+    bg: document.getElementById("threeHours").value,
+    dose: getDose("threeHours")
+});
             const threeHoursResult =
                 document.getElementById("threeHoursResult");
 
@@ -1110,7 +1232,9 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
            ========================= */
 
         else if (type === "tresiba") {
-
+sendLineNotification({
+    type: "tresiba"
+});
             const tresibaResult =
                 document.getElementById("tresibaResult");
 
@@ -1145,7 +1269,12 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
            ========================= */
 
         else if (type === "dinner") {
-
+sendLineNotification({
+    type: "dinner",
+    bg: document.getElementById("dinner").value,
+    dose: getDose("dinner"),
+    special: document.getElementById("dinnerSpecial").checked
+});
             const bedtime =
                 document.getElementById("bedtime");
 
@@ -1165,7 +1294,9 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
            ========================= */
 
         else if (type === "bedtime") {
-
+   await sendLineNotification(
+        buildDailySummaryPayload()
+    );
             /* 今日のデータを消去 */
 
             localStorage.removeItem(
@@ -1354,7 +1485,11 @@ function checkTresibaTime() {
         dose === 0 &&
         elapsed >= 15 * 60 * 1000
     ) {
-
+sendLineNotification({
+    type: "threeHours",
+    bg: document.getElementById("threeHours").value,
+    dose: getDose("threeHours")
+});
         /* 3時間後を黒字にする */
 
         threeHoursResult.classList.remove(
@@ -1402,7 +1537,7 @@ checkTresibaTime();
     15分
    ========================= */
 
-function checkBedtimeReset() {
+async function checkBedtimeReset() {
 
     const judgedAt =
         localStorage.getItem("bedtimeJudgedAt");
@@ -1415,7 +1550,9 @@ function checkBedtimeReset() {
         new Date() - new Date(judgedAt);
 
     if (elapsed >= 15 * 60 * 1000) {
-
+await sendLineNotification(
+    buildDailySummaryPayload()
+);
         localStorage.removeItem(
             STORAGE_KEY
         );
