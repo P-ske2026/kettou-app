@@ -710,7 +710,51 @@ function setLatestResult(type) {
 
 const STORAGE_KEY = "bloodSugarData";
 const LATEST_KEY = "latestBloodSugarResult";
+/* =========================
+   LINE通知
+   ========================= */
 
+async function sendLineNotification(data) {
+
+    try {
+
+        const response = await fetch(
+            "https://kettou-line.yts-bloom-style.workers.dev/notify",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(data)
+            }
+        );
+
+        if (!response.ok) {
+
+            console.error(
+                "LINE通知エラー:",
+                await response.text()
+            );
+
+            return false;
+        }
+
+        console.log("LINE通知送信成功");
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "LINE通知通信エラー:",
+            error
+        );
+
+        return false;
+    }
+}
 
 function getToday() {
 
