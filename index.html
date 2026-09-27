@@ -1091,8 +1091,7 @@ document.querySelectorAll(".confirm-button").forEach(function(button) {
 });
 document.querySelectorAll(".injection-complete").forEach(function(button) {
 
-    button.addEventListener("click", function() {
-
+    button.addEventListener("click", async function() {
         const type =
             button.dataset.type;
 
@@ -1295,7 +1294,9 @@ sendLineNotification({
            ========================= */
 
         else if (type === "bedtime") {
-
+   await sendLineNotification(
+        buildDailySummaryPayload()
+    );
             /* 今日のデータを消去 */
 
             localStorage.removeItem(
@@ -1484,7 +1485,11 @@ function checkTresibaTime() {
         dose === 0 &&
         elapsed >= 15 * 60 * 1000
     ) {
-
+sendLineNotification({
+    type: "threeHours",
+    bg: document.getElementById("threeHours").value,
+    dose: getDose("threeHours")
+});
         /* 3時間後を黒字にする */
 
         threeHoursResult.classList.remove(
@@ -1532,7 +1537,7 @@ checkTresibaTime();
     15分
    ========================= */
 
-function checkBedtimeReset() {
+async function checkBedtimeReset() {
 
     const judgedAt =
         localStorage.getItem("bedtimeJudgedAt");
@@ -1545,7 +1550,9 @@ function checkBedtimeReset() {
         new Date() - new Date(judgedAt);
 
     if (elapsed >= 15 * 60 * 1000) {
-
+await sendLineNotification(
+    buildDailySummaryPayload()
+);
         localStorage.removeItem(
             STORAGE_KEY
         );
