@@ -710,6 +710,44 @@ function setLatestResult(type) {
 
 const STORAGE_KEY = "bloodSugarData";
 const LATEST_KEY = "latestBloodSugarResult";
+const COMPLETED_KEY = "completedSteps";
+
+function getCompletedSteps() {
+    try {
+        return JSON.parse(localStorage.getItem(COMPLETED_KEY)) || {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveCompletedStep(type) {
+    const completed = getCompletedSteps();
+    completed[type] = true;
+    localStorage.setItem(COMPLETED_KEY, JSON.stringify(completed));
+}
+
+function applyCompletedState() {
+    const completed = getCompletedSteps();
+
+    document.querySelectorAll(".injection-complete").forEach(function(button) {
+        const type = button.dataset.type;
+        if (completed[type]) {
+            button.dataset.completed = "true";
+            button.style.display = "none";
+        }
+    });
+
+    Object.keys(completed).forEach(function(type) {
+        if (!completed[type]) return;
+        const input = document.getElementById(type);
+        if (input) {
+            input.disabled = true;
+            const item = input.closest(".item");
+            const confirmButton = item ? item.querySelector(".confirm-button") : null;
+            if (confirmButton) confirmButton.disabled = true;
+        }
+    });
+}
 /* =========================
    LINE通知
    ========================= */
@@ -893,6 +931,8 @@ function loadData() {
 
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(LATEST_KEY);
+        localStorage.removeItem(COMPLETED_KEY);
+        localStorage.removeItem("tresibaTransitionDate");
 
         document.getElementById("morning").value = "";
         document.getElementById("lunch").value = "";
@@ -940,6 +980,7 @@ function loadData() {
         localStorage.getItem(LATEST_KEY);
 
     setLatestResult(latest);
+    applyCompletedState();
 }
 
 
@@ -1110,6 +1151,15 @@ document.querySelectorAll(".injection-complete").forEach(function(button) {
 
         button.style.display = "none";
         button.dataset.completed = "true";
+        saveCompletedStep(type);
+
+        const completedInput = document.getElementById(type);
+        if (completedInput) {
+            completedInput.disabled = true;
+            const completedItem = completedInput.closest(".item");
+            const completedConfirmButton = completedItem ? completedItem.querySelector(".confirm-button") : null;
+            if (completedConfirmButton) completedConfirmButton.disabled = true;
+        }
 
 
         /* =========================
@@ -1297,20 +1347,7 @@ sendLineNotification({
    await sendLineNotification(
         buildDailySummaryPayload()
     );
-            /* 今日のデータを消去 */
-
-            localStorage.removeItem(
-                STORAGE_KEY
-            );
-
-            localStorage.removeItem(
-                LATEST_KEY
-            );
-
-            localStorage.removeItem(
-                "threeHoursJudgedAt"
-            );
-
+            /* 今日のデータは日付が変わるまで保持する */
 
             /* ページを再読み込み */
 
@@ -1372,65 +1409,27 @@ document.getElementById("calculateButton").addEventListener(
             currentType
         );
 
-
-
-        /* 3時間後を判定した時刻を保存 */
-
         if (currentType === "threeHours") {
+            const dose = getDose("threeHours");
+            if (dose === 0) {
+                sendLineNotification({
+                    type: "threeHours",
+                    bg: document.getElementById("threeHours").value,
+                    dose: dose
+                });
+            }
+        }
 
-            localStorage.setItem(
-                "threeHoursJudgedAt",
-                new Date().toISOString()
-            );
-
+        if (currentType === "bedtime") {
+            const dose = getDose("bedtime");
+            if (dose === 0) {
+                sendLineNotification(buildDailySummaryPayload());
+            }
         }
 
 
-        /* 夜を判定したら
-           3時間後のタイマーを解除 */
 
-        if (currentType === "dinner") {
-
-            localStorage.removeItem(
-                "threeHoursJudgedAt"
-            );
-
-        }
-/* 就寝前を判定した時刻を保存 */
-
-if (currentType === "bedtime") {
-
-    const bedtimeResult =
-        document.getElementById("bedtimeResult");
-
-    const doseElement =
-        bedtimeResult.querySelector(".result-dose");
-
-    if (doseElement) {
-
-        const dose =
-            parseInt(
-                doseElement.textContent.trim(),
-                10
-            );
-
-        if (dose === 0) {
-
-            localStorage.setItem(
-                "bedtimeJudgedAt",
-                new Date().toISOString()
-            );
-
-        } else {
-
-            localStorage.removeItem(
-                "bedtimeJudgedAt"
-            );
-        }
-    }
-}
-
-        /* 入力内容を保存 */
+/* 入力内容を保存 */
 
         saveData();
 
@@ -1443,145 +1442,55 @@ if (currentType === "bedtime") {
 );
 function checkTresibaTime() {
 
-    const judgedAt =
-        localStorage.getItem("threeHoursJudgedAt");
-
     const threeHoursResult =
         document.getElementById("threeHoursResult");
 
     const tresibaResult =
         document.querySelector("#tresibaResult");
 
-    if (
-        !judgedAt ||
-        !threeHoursResult ||
-        !tresibaResult
-    ) {
+    if (!threeHoursResult || !tresibaResult) {
         return;
     }
-
-    const elapsed =
-        new Date() - new Date(judgedAt);
-
-    /*
-     * 3時間後が0単位の場合、
-     * 判定から15分後にトレシーバへ移行
-     */
 
     const doseElement =
         threeHoursResult.querySelector(".result-dose");
 
-    if (!doseElement) {
+    if (!doseElement || threeHoursResult.style.display === "none") {
         return;
     }
 
-    const doseText =
-        doseElement.textContent.trim();
+    const now = new Date();
+    const minutes = now.getHours() * 60 + now.getMinutes();
+    const transitionDate = localStorage.getItem("tresibaTransitionDate");
+    const today = getToday();
 
-    const dose =
-        parseInt(doseText, 10);
-
-    if (
-        dose === 0 &&
-        elapsed >= 15 * 60 * 1000
-    ) {
-sendLineNotification({
-    type: "threeHours",
-    bg: document.getElementById("threeHours").value,
-    dose: getDose("threeHours")
-});
-        /* 3時間後を黒字にする */
-
-        threeHoursResult.classList.remove(
-            "latest-result"
-        );
-
-        threeHoursResult.style.color = "";
-
-        /* トレシーバを赤字にする */
-
-        tresibaResult.classList.add(
-            "latest-result"
-        );
-const tresibaButton =
-    document.querySelector(
-        '.injection-complete[data-type="tresiba"]'
-    );
-
-if (tresibaButton) {
-    tresibaButton.style.display = "block";
-}
-        /* 一度だけ移行する */
-
-        localStorage.removeItem(
-            "threeHoursJudgedAt"
-        );
+    if (minutes < 17 * 60 + 45 || transitionDate === today) {
+        return;
     }
+
+    tresibaResult.classList.add("latest-result");
+    localStorage.setItem(LATEST_KEY, "tresiba");
+    localStorage.setItem("tresibaTransitionDate", today);
+
+    const tresibaButton =
+        document.querySelector('.injection-complete[data-type="tresiba"]');
+
+    if (tresibaButton && tresibaButton.dataset.completed !== "true") {
+        tresibaButton.style.display = "block";
+    }
+
+    tresibaResult.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
 }
-
-
-/* 5秒ごとに時間を確認 */
 
 setInterval(function() {
-
     checkTresibaTime();
-
 }, 5000);
-
-
-/* ページを開いた直後にも確認 */
 
 checkTresibaTime();
-   /* =========================
-   就寝前0単位の自動終了
-    15分
-   ========================= */
 
-async function checkBedtimeReset() {
-
-    const judgedAt =
-        localStorage.getItem("bedtimeJudgedAt");
-
-    if (!judgedAt) {
-        return;
-    }
-
-    const elapsed =
-        new Date() - new Date(judgedAt);
-
-    if (elapsed >= 15 * 60 * 1000) {
-await sendLineNotification(
-    buildDailySummaryPayload()
-);
-        localStorage.removeItem(
-            STORAGE_KEY
-        );
-
-        localStorage.removeItem(
-            LATEST_KEY
-        );
-
-        localStorage.removeItem(
-            "bedtimeJudgedAt"
-        );
-
-        location.reload();
-    }
-}
-
-
-/* 5秒ごとに確認 */
-
-setInterval(function() {
-
-    checkBedtimeReset();
-
-}, 5000);
-
-
-/* ページを開いた直後にも確認 */
-
-checkBedtimeReset();
 /* =========================
    数値入力時に自動保存
    ========================= */
@@ -1650,6 +1559,8 @@ setInterval(function() {
 
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(LATEST_KEY);
+        localStorage.removeItem(COMPLETED_KEY);
+        localStorage.removeItem("tresibaTransitionDate");
 
         location.reload();
     }
