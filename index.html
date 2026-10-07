@@ -605,10 +605,11 @@ function showResult(type, value, special) {
 
             if (dose >= 1) {
                 button.style.display = "block";
+            } else {
+                button.style.display = "none";
             }
         }
     }
-
 
     /* =========================
        夜
@@ -1392,12 +1393,11 @@ document.getElementById("calculateButton").addEventListener(
             confirmation.dataset.currentType;
 
 
-        /* 判定 */
-
-        updateAll();
+       updateAll();
 
 
-        /* 最新の時間帯を赤字にする */
+
+/* 最新の時間帯を赤字にする */
 
         setLatestResult(currentType);
 
@@ -1411,15 +1411,30 @@ document.getElementById("calculateButton").addEventListener(
 
         if (currentType === "threeHours") {
             const dose = getDose("threeHours");
+
             if (dose === 0) {
+
+                /* 0単位判定時刻を保存 */
+                localStorage.setItem(
+                    "threeHoursJudgedAt",
+                    Date.now().toString()
+                );
+
+                /* 0単位LINEを送信 */
                 sendLineNotification({
                     type: "threeHours",
                     bg: document.getElementById("threeHours").value,
                     dose: dose
                 });
+
+            } else {
+
+                /* 1単位以上に訂正されたら猶予タイマーを解除 */
+                localStorage.removeItem(
+                    "threeHoursJudgedAt"
+                );
             }
         }
-
         if (currentType === "bedtime") {
             const dose = getDose("bedtime");
             if (dose === 0) {
@@ -1440,6 +1455,44 @@ document.getElementById("calculateButton").addEventListener(
 
     }
 );
+
+function checkThreeHoursEditLock() {
+
+    const judgedAt =
+        localStorage.getItem("threeHoursJudgedAt");
+
+    if (!judgedAt) {
+        return;
+    }
+
+    const elapsed =
+        Date.now() - Number(judgedAt);
+
+    /* 2分以内なら編集可能 */
+    if (elapsed < 2 * 60 * 1000) {
+        return;
+    }
+
+    const input =
+        document.getElementById("threeHours");
+
+    if (input) {
+        input.disabled = true;
+    }
+
+    const item =
+        input ? input.closest(".item") : null;
+
+    const confirmButton =
+        item ?
+        item.querySelector(".confirm-button") :
+        null;
+
+    if (confirmButton) {
+        confirmButton.disabled = true;
+    }
+}
+
 function checkTresibaTime() {
 
     const threeHoursResult =
@@ -1487,10 +1540,11 @@ function checkTresibaTime() {
 
 setInterval(function() {
     checkTresibaTime();
+    checkThreeHoursEditLock();
 }, 5000);
 
 checkTresibaTime();
-
+checkThreeHoursEditLock();
 /* =========================
    数値入力時に自動保存
    ========================= */
