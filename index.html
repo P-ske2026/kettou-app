@@ -1597,31 +1597,59 @@ document.getElementById("calculateButton").addEventListener(
         );
 
 
-        /* =========================
+         /* =========================
            3時間後 0単位
            2分タイマー開始
+           同じ血糖値の重複送信を防止
            ========================= */
 
         if (currentType === "threeHours") {
 
-            const dose =
-                getDose("threeHours");
+            const dose = getDose("threeHours");
 
             if (dose === 0) {
+
+                const bg =
+                    document.getElementById(
+                        "threeHours"
+                    ).value.trim();
 
                 localStorage.setItem(
                     "threeHoursJudgedAt",
                     Date.now().toString()
                 );
 
-                sendLineNotification({
-                    type: "threeHours",
-                    bg:
-                        document.getElementById(
-                            "threeHours"
-                        ).value,
-                    dose: dose
-                });
+                const sentBgKey =
+                    "threeHoursZeroSentBg";
+
+                const lastSentBg =
+                    localStorage.getItem(sentBgKey);
+
+                if (lastSentBg !== bg) {
+
+                    /* 送信前に今回の血糖値を記録 */
+                    localStorage.setItem(
+                        sentBgKey,
+                        bg
+                    );
+
+                    sendLineNotification({
+                        type: "threeHours",
+                        bg: bg,
+                        dose: dose
+                    }).then(function(success) {
+
+                        /* 送信失敗時は再送信できるよう記録を解除 */
+                        if (
+                            !success &&
+                            localStorage.getItem(sentBgKey) === bg
+                        ) {
+                            localStorage.removeItem(
+                                sentBgKey
+                            );
+                        }
+                    });
+                }
             }
         }
 
@@ -1856,13 +1884,17 @@ setInterval(function() {
 
     if (data.date !== getToday()) {
 
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem(LATEST_KEY);
-        localStorage.removeItem(COMPLETED_KEY);
-        localStorage.removeItem("tresibaTransitionDate");
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(LATEST_KEY);
+    localStorage.removeItem(COMPLETED_KEY);
+    localStorage.removeItem("tresibaTransitionDate");
 
-        location.reload();
-    }
+    /* 3時間後0単位のLINE送信記録もリセット */
+    localStorage.removeItem("threeHoursZeroSentBg");
+    localStorage.removeItem("threeHoursJudgedAt");
+
+    location.reload();
+}
 
 }, 60000);
 
