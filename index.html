@@ -1310,58 +1310,103 @@ function finishDayAndReset() {
 /* =========================
    就寝前0単位のまとめLINE
    同じ血糖値の重複送信を防止
+   血糖値変更時は新しい内容を送信
    ========================= */
 
-function sendDailySummaryForBedtimeZero() {
+async function sendDailySummaryForBedtimeZero() {
     const input = document.getElementById("bedtime");
-    const bg = input.value.trim();
+    if (!input || input.value.trim() === "") return;
 
     const sentKey = "dailySummaryZeroSentBedtimeBg";
     const sendingKey = "dailySummaryZeroSendingBedtimeBg";
     const judgedAtKey = "bedtimeJudgedAt";
 
-    // 現在の入力から単位数を再計算
     const dose = getCurrentDose("bedtime");
 
-    // 0単位でなければ、0単位用のタイマーを解除
+    // 0単位でなければ自動終了タイマーを解除
     if (dose !== 0) {
         localStorage.removeItem(judgedAtKey);
         return;
     }
 
-    // 最初の0単位判定時刻だけを保存。再判定では更新しない
+    // 最初の0単位判定時刻を保存
     if (!localStorage.getItem(judgedAtKey)) {
-        localStorage.setItem(judgedAtKey, Date.now().toString());
+        localStorage.setItem(
+            judgedAtKey,
+            Date.now().toString()
+        );
     }
 
-    // 同じ血糖値を送信済みなら重複送信しない
-    if (localStorage.getItem(sentKey) === bg) {
-        return;
-    }
-
-    // 別のまとめLINEが送信中なら、二重送信しない
+    // 送信処理がすでに動いていれば、そちらに任せる
     if (localStorage.getItem(sendingKey)) {
         return;
     }
 
+    // 現在の血糖値を取得
+    let bg = input.value.trim();
+
+    // 同じ血糖値を送信済みなら再送しない
+    if (localStorage.getItem(sentKey) === bg) {
+        return;
+    }
+
+    // 送信中の値を記録
     localStorage.setItem(sendingKey, bg);
 
-    sendLineNotification(buildDailySummaryPayload()).then(function(success) {
-        // 今回の送信に対応する記録だけを解除
-        if (localStorage.getItem(sendingKey) === bg) {
-            localStorage.removeItem(sendingKey);
-        }
+    try {
+        while (true) {
+            // 現在の入力値から最新の内容を作成
+            const currentBg = input.value.trim();
+            const currentDose = getCurrentDose("bedtime");
 
-        if (success) {
+            // 入力が空、または0単位でなくなった場合は中止
+            if (currentBg === "" || currentDose !== 0) {
+                localStorage.removeItem(judgedAtKey);
+                break;
+            }
+
+            // 最新の値がすでに送信済みなら終了
+            if (localStorage.getItem(sentKey) === currentBg) {
+                break;
+            }
+
+            bg = currentBg;
+
+            const payload = buildDailySummaryPayload();
+            const success = await sendLineNotification(payload);
+
+            if (!success) {
+                alert(
+                    "就寝前のまとめLINEを送信できませんでした。" +
+                    "通信状態を確認して、再度判定してください。"
+                );
+                break;
+            }
+
+            // 送信成功した血糖値を記録
             localStorage.setItem(sentKey, bg);
-        } else {
-            alert(
-                "就寝前のまとめLINEを送信できませんでした。" +
-                "データは保持しています。通信状態を確認し、再度判定してください。"
-            );
+
+            // 送信中に血糖値が変わっていたら、最新値を再送する
+            if (input.value.trim() !== bg) {
+                continue;
+            }
+
+            break;
         }
-    });
-}   function getToday() {
+    } catch (error) {
+        console.error("就寝前のまとめLINE送信エラー:", error);
+
+        alert(
+            "就寝前のまとめLINE送信中にエラーが発生しました。" +
+            "通信状態を確認して、再度判定してください。"
+        );
+    } finally {
+        localStorage.removeItem(sendingKey);
+    }
+}
+
+
+function getToday() {
 
     const now = new Date();
 
