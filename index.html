@@ -4,2128 +4,374 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>血糖管理</title>
-
 <style>
-    * {
-        box-sizing: border-box;
-    }
-
-    body {
-        margin: 0;
-        background: #f2f2f2;
-        font-family: Arial, "Noto Sans JP", sans-serif;
-        color: #222;
-    }
-
-    .container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 15px;
-    }
-
-    h1 {
-        text-align: center;
-        font-size: 34px;
-        margin: 10px 0 25px;
-    }
-
-    .item {
-        background: white;
-        border-radius: 18px;
-        padding: 20px;
-        margin-bottom: 18px;
-        box-shadow: 0 2px 7px rgba(0,0,0,0.10);
-    }
-
-    .title {
-        font-size: 30px;
-        font-weight: bold;
-        margin-bottom: 12px;
-    }
-
-    .unit {
-        font-size: 18px;
-        font-weight: normal;
-        margin-left: 5px;
-    }
-
-    input[type="number"] {
-        width: 100%;
-        height: 70px;
-        font-size: 36px;
-        padding: 10px 15px;
-        border: 3px solid #888;
-        border-radius: 12px;
-        text-align: center;
-    }
-
-    input[type="number"]:focus {
-        border-color: #333;
-        outline: none;
-    }
-
-   .result {
-    margin-top: 15px;
-    padding: 12px 10px;
-    text-align: center;
-    background: #eeeeee;
-    border-radius: 12px;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.result-label {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 4px;
-}
-
-.result-dose {
-    font-size: 32px;
-    font-weight: bold;
-}
-
-.result-label {
-    font-size: 22px;
-    margin-bottom: 5px;
-}
-
-.result-dose {
-    font-size: 42px;
-    font-weight: bold;
-}
-
-    .dose-number {
-        font-size: 42px;
-    }
-.result-label {
-    font-size: 22px;
-    margin-bottom: 5px;
-}
-
-.result-dose {
-    font-size: 42px;
-    font-weight: bold;
-}
-    .check {
-        margin-top: 18px;
-        padding: 10px 5px;
-        font-size: 24px;
-        font-weight: bold;
-    }
-
-    .check input {
-        width: 30px;
-        height: 30px;
-        vertical-align: middle;
-        margin-right: 8px;
-    }
-
-    .fixed {
-        background: #eeeeee;
-        padding: 20px 10px;
-        border-radius: 12px;
-        font-size: 30px;
-        text-align: center;
-        font-weight: bold;
-    }
-
-    .notice {
-        text-align: center;
-        font-size: 18px;
-        margin-top: 10px;
-        color: #555;
-    }
-
-    .confirm-button {
-        width: 100%;
-        height: 70px;
-        margin-top: 15px;
-        border: none;
-        border-radius: 12px;
-        background: #333;
-        color: white;
-        font-size: 28px;
-        font-weight: bold;
-    }
-.injection-complete {
-     width: 33%;
-    min-width: 150px;
-    height: 110px;
-    margin-top: 15px;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-    border: none;
-    border-radius: 12px;
-    background: #2e8b57;
-    color: white;
-    font-size: 28px;
-    font-weight: bold;
-}
-    .confirmation {
-        background: white;
-        border-radius: 18px;
-        padding: 20px;
-        margin-top: 18px;
-        box-shadow: 0 2px 7px rgba(0,0,0,0.10);
-    }
-
-    .confirmation-title {
-        font-size: 28px;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .confirmation-line {
-        font-size: 22px;
-        padding: 10px 5px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .calculate-button {
-        width: 100%;
-        height: 65px;
-        margin-top: 20px;
-        border: none;
-        border-radius: 12px;
-        background: #333;
-        color: white;
-        font-size: 25px;
-        font-weight: bold;
-    }
-
-    .back-button {
-        width: 100%;
-        height: 60px;
-        margin-top: 12px;
-        border: 2px solid #888;
-        border-radius: 12px;
-        background: white;
-        color: #222;
-        font-size: 23px;
-        font-weight: bold;
-    }
- /* 最新の判定結果 */
-.result.latest-result {
-    color: red;
-}
-
-.result.latest-result .result-dose {
-    color: red;
-}
-.fixed.latest-result {
-    color: red;
-}
-
-.fixed.latest-result .dose-number {
-    color: red;
-}
+*{box-sizing:border-box}body{margin:0;background:#f2f2f2;font-family:Arial,"Noto Sans JP",sans-serif;color:#222}
+.container{max-width:600px;margin:0 auto;padding:15px}h1{text-align:center;font-size:34px;margin:10px 0 25px}
+.item{background:white;border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 2px 7px rgba(0,0,0,.10)}
+.title{font-size:30px;font-weight:bold;margin-bottom:12px}.unit{font-size:18px;font-weight:normal;margin-left:5px}
+input[type="number"]{width:100%;height:70px;font-size:36px;padding:10px 15px;border:3px solid #888;border-radius:12px;text-align:center}
+input[type="number"]:focus{border-color:#333;outline:none}
+.result{margin-top:15px;padding:12px 10px;text-align:center;background:#eee;border-radius:12px;font-size:24px;font-weight:bold}
+.result-label{font-size:22px;font-weight:bold;margin-bottom:5px}.result-dose{font-size:42px;font-weight:bold}
+.dose-number{font-size:42px}.check{margin-top:18px;padding:10px 5px;font-size:24px;font-weight:bold}
+.check input{width:30px;height:30px;vertical-align:middle;margin-right:8px}
+.fixed{background:#eee;padding:20px 10px;border-radius:12px;font-size:30px;text-align:center;font-weight:bold}
+.notice{text-align:center;font-size:18px;margin-top:10px;color:#555}
+.confirm-button{width:100%;height:70px;margin-top:15px;border:none;border-radius:12px;background:#333;color:white;font-size:28px;font-weight:bold}
+.injection-complete{width:33%;min-width:150px;height:110px;margin-top:15px;margin-left:auto;margin-right:auto;display:block;border:none;border-radius:12px;background:#2e8b57;color:white;font-size:28px;font-weight:bold}
+.confirmation{background:white;border-radius:18px;padding:20px;margin-top:18px;box-shadow:0 2px 7px rgba(0,0,0,.10)}
+.confirmation-title{font-size:28px;font-weight:bold;text-align:center;margin-bottom:20px}
+.confirmation-line{font-size:22px;padding:10px 5px;border-bottom:1px solid #ddd}
+.calculate-button{width:100%;height:65px;margin-top:20px;border:none;border-radius:12px;background:#333;color:white;font-size:25px;font-weight:bold}
+.back-button{width:100%;height:60px;margin-top:12px;border:2px solid #888;border-radius:12px;background:white;color:#222;font-size:23px;font-weight:bold}
+.result.latest-result,.result.latest-result .result-dose,.fixed.latest-result,.fixed.latest-result .dose-number{color:red}
 </style>
-
 </head>
-
 <body>
-
 <div class="container">
-
-    <h1>今日の血糖値</h1>
-
-    <!-- 朝 -->
-    <div class="item">
-        <div class="title">
-            朝 <span class="unit">血糖値（mg/dL）</span>
-        </div>
-
-        <input type="number" id="morning" placeholder="入力" min="0" max="1000" step="1">
-
-        <button class="confirm-button">
-            入力内容を確認
-        </button>
-
-        <div class="result" id="morningResult" style="display:none;">
-            血糖値を入力してください
-        </div>
-    </div>
-    <button class="injection-complete" data-type="morning" style="display:none;" onclick="completeInjection('morning')">注射完了</button>
-
-    <!-- 昼 -->
-    <div class="item">
-        <div class="title">
-            昼 <span class="unit">血糖値（mg/dL）</span>
-        </div>
-
-        <input type="number" id="lunch" placeholder="入力" min="0" max="1000" step="1">
-
-        <div class="check">
-            <label>
-                <input type="checkbox" id="lunchSpecial">
-                外食・丼・揚げ物
-            </label>
-        </div>
-
-        <button class="confirm-button">
-            入力内容を確認
-        </button>
-
-        <div class="result" id="lunchResult" style="display:none;">
-            血糖値を入力してください
-        </div>
-       <button class="injection-complete" data-type="lunch" style="display:none;" onclick="completeInjection('lunch')">注射完了</button>
-    </div>
-
-
-    <!-- 3時間後 -->
-    <div class="item">
-        <div class="title">
-            3時間後 <span class="unit">血糖値（mg/dL）</span>
-        </div>
-
-        <input type="number" id="threeHours" placeholder="入力" min="0" max="1000" step="1">
-
-        <button class="confirm-button">
-            入力内容を確認
-        </button>
-
-       <div class="result" id="threeHoursResult" style="display:none;">
-    血糖値を入力してください
-</div>
-
-<button class="injection-complete" data-type="threeHours" style="display:none;" onclick="completeInjection('threeHours')">
-    注射完了
-</button>
-    </div>
-
-
-    <!-- 18時 -->
+<h1>今日の血糖値</h1>
 <div class="item">
-    <div class="title">18時</div>
-
-    <div class="fixed" id="tresibaResult">
-        トレシーバ<br>
-        <span class="dose-number">7単位</span>
-    </div>
-
-  <button class="injection-complete" data-type="tresiba" style="display:none;" onclick="completeInjection('tresiba')">注射完了</button>
+<div class="title">朝 <span class="unit">血糖値（mg/dL）</span></div>
+<input type="number" id="morning" placeholder="入力" min="0" max="1000" step="1">
+<button class="confirm-button">入力内容を確認</button>
+<div class="result" id="morningResult" style="display:none;">血糖値を入力してください</div>
 </div>
-
-
-    <!-- 夜 -->
-    <div class="item">
-        <div class="title">
-            夜 <span class="unit">血糖値（mg/dL）</span>
-        </div>
-
-        <input type="number" id="dinner" placeholder="入力" min="0" max="1000" step="1">
-
-        <div class="check">
-            <label>
-                <input type="checkbox" id="dinnerSpecial">
-                外食・丼・揚げ物
-            </label>
-        </div>
-
-        <button class="confirm-button">
-            入力内容を確認
-        </button>
-
-      <div class="result" id="dinnerResult" style="display:none;">
-    血糖値を入力してください
+<button class="injection-complete" data-type="morning" style="display:none;" onclick="completeInjection('morning')">注射完了</button>
+<div class="item">
+<div class="title">昼 <span class="unit">血糖値（mg/dL）</span></div>
+<input type="number" id="lunch" placeholder="入力" min="0" max="1000" step="1">
+<div class="check"><label><input type="checkbox" id="lunchSpecial">外食・丼・揚げ物</label></div>
+<button class="confirm-button">入力内容を確認</button>
+<div class="result" id="lunchResult" style="display:none;">血糖値を入力してください</div>
+<button class="injection-complete" data-type="lunch" style="display:none;" onclick="completeInjection('lunch')">注射完了</button>
 </div>
-
-<button class="injection-complete" data-type="dinner" style="display:none;"onclick="completeInjection('dinner')">
-    注射完了
-</button>
-    </div>
-
-
-    <!-- 就寝前 -->
-    <div class="item">
-        <div class="title">
-            就寝前 <span class="unit">血糖値（mg/dL）</span>
-        </div>
-
-        <input type="number" id="bedtime" placeholder="入力" min="0" max="1000" step="1">
-
-        <button class="confirm-button">
-            入力内容を確認
-        </button>
-
-       <div class="result" id="bedtimeResult" style="display:none;">
-    血糖値を入力してください
+<div class="item">
+<div class="title">3時間後 <span class="unit">血糖値（mg/dL）</span></div>
+<input type="number" id="threeHours" placeholder="入力" min="0" max="1000" step="1">
+<button class="confirm-button">入力内容を確認</button>
+<div class="result" id="threeHoursResult" style="display:none;">血糖値を入力してください</div>
+<button class="injection-complete" data-type="threeHours" style="display:none;" onclick="completeInjection('threeHours')">注射完了</button>
 </div>
-
-<button class="injection-complete" data-type="bedtime" style="display:none;" onclick="completeInjection('bedtime')">
-    注射完了
-</button>
-    </div>
-
-
-    <div id="confirmation" class="confirmation" style="display:none;">
-
-        <div class="confirmation-title">
-            入力内容の確認
-        </div>
-
-        <div id="confirmationText"></div>
-
-        <button id="calculateButton" class="calculate-button">
-            この内容で判定する
-        </button>
-
-        <button id="backButton" class="back-button">
-            戻って修正する
-        </button>
-
-    </div>
-
+<div class="item">
+<div class="title">18時</div>
+<div class="fixed" id="tresibaResult">トレシーバ<br><span class="dose-number">7単位</span></div>
+<button class="injection-complete" data-type="tresiba" style="display:none;" onclick="completeInjection('tresiba')">注射完了</button>
 </div>
-
+<div class="item">
+<div class="title">夜 <span class="unit">血糖値（mg/dL）</span></div>
+<input type="number" id="dinner" placeholder="入力" min="0" max="1000" step="1">
+<div class="check"><label><input type="checkbox" id="dinnerSpecial">外食・丼・揚げ物</label></div>
+<button class="confirm-button">入力内容を確認</button>
+<div class="result" id="dinnerResult" style="display:none;">血糖値を入力してください</div>
+<button class="injection-complete" data-type="dinner" style="display:none;" onclick="completeInjection('dinner')">注射完了</button>
+</div>
+<div class="item">
+<div class="title">就寝前 <span class="unit">血糖値（mg/dL）</span></div>
+<input type="number" id="bedtime" placeholder="入力" min="0" max="1000" step="1">
+<button class="confirm-button">入力内容を確認</button>
+<div class="result" id="bedtimeResult" style="display:none;">血糖値を入力してください</div>
+<button class="injection-complete" data-type="bedtime" style="display:none;" onclick="completeInjection('bedtime')">注射完了</button>
+</div>
+<div id="confirmation" class="confirmation" style="display:none;">
+<div class="confirmation-title">入力内容の確認</div><div id="confirmationText"></div>
+<button id="calculateButton" class="calculate-button">この内容で判定する</button>
+<button id="backButton" class="back-button">戻って修正する</button>
+</div>
+</div>
 <script>
-
-/* =========================
-   インスリン量の計算
-   ========================= */
-
-function calculate(type, value, special = false) {
-
-    if (value === "" || value === null) {
-        return "血糖値を入力してください";
-    }
-
-    const bg = Number(value);
-
-    if (bg < 70) {
-        return "計算対象外";
-    }
-
-    let dose = 0;
-
-    if (bg <= 249) {
-        if (type === "morning") dose = 8;
-        if (type === "lunch") dose = special ? 8 : 6;
-        if (type === "threeHours") dose = 0;
-        if (type === "dinner") dose = special ? 9 : 7;
-        if (type === "bedtime") dose = 0;
-
-    } else if (bg <= 299) {
-        if (type === "morning") dose = 9;
-        if (type === "lunch") dose = special ? 9 : 7;
-        if (type === "threeHours") dose = 0;
-        if (type === "dinner") dose = special ? 10 : 8;
-        if (type === "bedtime") dose = 0;
-
-    } else if (bg <= 349) {
-        if (type === "morning") dose = 10;
-        if (type === "lunch") dose = special ? 10 : 8;
-        if (type === "threeHours") dose = 1;
-        if (type === "dinner") dose = special ? 11 : 9;
-        if (type === "bedtime") dose = 1;
-
-    } else if (bg <= 399) {
-        if (type === "morning") dose = 11;
-        if (type === "lunch") dose = special ? 11 : 9;
-        if (type === "threeHours") dose = 2;
-        if (type === "dinner") dose = special ? 12 : 10;
-        if (type === "bedtime") dose = 2;
-
-    } else if (bg <= 449) {
-        if (type === "morning") dose = 12;
-        if (type === "lunch") dose = special ? 12 : 10;
-        if (type === "threeHours") dose = 3;
-        if (type === "dinner") dose = special ? 13 : 11;
-        if (type === "bedtime") dose = 3;
-
-    } else if (bg <= 499) {
-        if (type === "morning") dose = 13;
-        if (type === "lunch") dose = special ? 13 : 11;
-        if (type === "threeHours") dose = 4;
-        if (type === "dinner") dose = special ? 14 : 12;
-        if (type === "bedtime") dose = 4;
-
-    } else {
-        if (type === "morning") dose = 14;
-        if (type === "lunch") dose = special ? 14 : 12;
-        if (type === "threeHours") dose = 5;
-        if (type === "dinner") dose = special ? 15 : 13;
-        if (type === "bedtime") dose = 5;
-    }
-
-    return dose + "単位";
+/* インスリン計算式は変更していません */
+function calculate(type,value,special=false){
+ if(value===""||value===null)return "血糖値を入力してください";
+ const bg=Number(value);if(bg<70)return "計算対象外";let dose=0;
+ if(bg<=249){if(type==="morning")dose=8;if(type==="lunch")dose=special?8:6;if(type==="threeHours")dose=0;if(type==="dinner")dose=special?9:7;if(type==="bedtime")dose=0}
+ else if(bg<=299){if(type==="morning")dose=9;if(type==="lunch")dose=special?9:7;if(type==="threeHours")dose=0;if(type==="dinner")dose=special?10:8;if(type==="bedtime")dose=0}
+ else if(bg<=349){if(type==="morning")dose=10;if(type==="lunch")dose=special?10:8;if(type==="threeHours")dose=1;if(type==="dinner")dose=special?11:9;if(type==="bedtime")dose=1}
+ else if(bg<=399){if(type==="morning")dose=11;if(type==="lunch")dose=special?11:9;if(type==="threeHours")dose=2;if(type==="dinner")dose=special?12:10;if(type==="bedtime")dose=2}
+ else if(bg<=449){if(type==="morning")dose=12;if(type==="lunch")dose=special?12:10;if(type==="threeHours")dose=3;if(type==="dinner")dose=special?13:11;if(type==="bedtime")dose=3}
+ else if(bg<=499){if(type==="morning")dose=13;if(type==="lunch")dose=special?13:11;if(type==="threeHours")dose=4;if(type==="dinner")dose=special?14:12;if(type==="bedtime")dose=4}
+ else {if(type==="morning")dose=14;if(type==="lunch")dose=special?14:12;if(type==="threeHours")dose=5;if(type==="dinner")dose=special?15:13;if(type==="bedtime")dose=5}
+ return dose+"単位";
 }
-
-
-/* =========================
-   結果表示
-   ========================= */
-
-function updateAll() {
-
-    const data = {
-        morning: document.getElementById("morning").value,
-        lunch: document.getElementById("lunch").value,
-        threeHours: document.getElementById("threeHours").value,
-        dinner: document.getElementById("dinner").value,
-        bedtime: document.getElementById("bedtime").value,
-        lunchSpecial: document.getElementById("lunchSpecial").checked,
-        dinnerSpecial: document.getElementById("dinnerSpecial").checked
-    };
-
-
-    showResult(
-        "morning",
-        data.morning,
-        false
-    );
-
-    showResult(
-        "lunch",
-        data.lunch,
-        data.lunchSpecial
-    );
-
-    showResult(
-        "threeHours",
-        data.threeHours,
-        false
-    );
-
-    showResult(
-        "dinner",
-        data.dinner,
-        data.dinnerSpecial
-    );
-
-    showResult(
-        "bedtime",
-        data.bedtime,
-        false
-    );
+function updateAll(){const data={morning:document.getElementById("morning").value,lunch:document.getElementById("lunch").value,threeHours:document.getElementById("threeHours").value,dinner:document.getElementById("dinner").value,bedtime:document.getElementById("bedtime").value,lunchSpecial:document.getElementById("lunchSpecial").checked,dinnerSpecial:document.getElementById("dinnerSpecial").checked};showResult("morning",data.morning,false);showResult("lunch",data.lunch,data.lunchSpecial);showResult("threeHours",data.threeHours,false);showResult("dinner",data.dinner,data.dinnerSpecial);showResult("bedtime",data.bedtime,false)}
+function showResult(type,value,special){
+ const result=document.getElementById(type+"Result"),answer=calculate(type,value,special);
+ if(answer==="血糖値を入力してください"){result.style.display="none";const button=document.querySelector('.injection-complete[data-type="'+type+'"]');if(button&&button.dataset.completed!=="true")button.style.display="none";return}
+ let label="";if(type==="morning")label="朝のインスリン";if(type==="lunch")label="昼のインスリン";if(type==="threeHours")label="3時間後のインスリン";if(type==="dinner")label="夜のインスリン";if(type==="bedtime")label="就寝前のインスリン";
+ result.innerHTML='<div class="result-label">'+label+'</div><div class="result-dose">'+answer+'</div>';result.style.display="block";
+ if(type==="morning"||type==="lunch"){const button=document.querySelector('.injection-complete[data-type="'+type+'"]');if(button&&button.dataset.completed!=="true")button.style.display="block"}
+ if(type==="threeHours"||type==="dinner"||type==="bedtime"){const button=document.querySelector('.injection-complete[data-type="'+type+'"]'),doseElement=result.querySelector(".result-dose");if(button&&doseElement&&button.dataset.completed!=="true"){const dose=parseInt(doseElement.textContent.trim(),10);if(dose>=1)button.style.display="block"}}
+ const finalButton=document.querySelector('.injection-complete[data-type="'+type+'"]');if(finalButton&&finalButton.dataset.completed!=="true"){const doseElement=result.querySelector(".result-dose"),match=doseElement?doseElement.textContent.trim().match(/^(\d+)単位$/):null;if(!match||Number(match[1])===0)finalButton.style.display="none"}
 }
-
-function showResult(type, value, special) {
-
-    const result =
-        document.getElementById(type + "Result");
-
-    const answer =
-        calculate(type, value, special);
-
-
-   if (answer === "血糖値を入力してください") {
-    result.style.display = "none";
-
-    const button = document.querySelector(
-        '.injection-complete[data-type="' + type + '"]'
-    );
-
-    if (button && button.dataset.completed !== "true") {
-        button.style.display = "none";
-    }
-
-    return;
+function setLatestResult(type){document.querySelectorAll(".result").forEach(result=>result.classList.remove("latest-result"));if(!type)return;const result=document.getElementById(type+"Result");if(result)result.classList.add("latest-result")}
+function restoreThreeHoursJudgedDose(){
+ const savedDose=localStorage.getItem("threeHoursJudgedDose");
+ const result=document.getElementById("threeHoursResult");
+ if(!result||result.style.display==="none"||savedDose===null)return;
+ const dose=Number(savedDose);
+ if(!Number.isInteger(dose)||dose<0||dose>5)return;
+ const doseElement=result.querySelector(".result-dose");
+ if(doseElement)doseElement.textContent=dose+"単位";
+ const button=document.querySelector('.injection-complete[data-type="threeHours"]');
+ if(button&&button.dataset.completed!=="true")button.style.display=dose>=1?"block":"none";
 }
-
-
-    let label = "";
-
-    if (type === "morning") {
-        label = "朝のインスリン";
-    }
-
-    if (type === "lunch") {
-        label = "昼のインスリン";
-    }
-
-    if (type === "threeHours") {
-        label = "3時間後のインスリン";
-    }
-
-    if (type === "dinner") {
-        label = "夜のインスリン";
-    }
-
-    if (type === "bedtime") {
-        label = "就寝前のインスリン";
-    }
-
-
-    result.innerHTML =
-        '<div class="result-label">' +
-        label +
-        '</div>' +
-        '<div class="result-dose">' +
-        answer +
-        '</div>';
-
-    result.style.display = "block";
-
-
-    /* =========================
-       朝・昼
-       ========================= */
-
-    if (type === "morning" || type === "lunch") {
-
-        const button =
-            document.querySelector(
-                '.injection-complete[data-type="' +
-                type +
-                '"]'
-            );
-
-        if (
-            button &&
-            button.dataset.completed !== "true"
-        ) {
-            button.style.display = "block";
-        }
-    }
-
-
-    /* =========================
-       3時間後
-       1単位以上なら完了ボタン
-       ========================= */
-
-    if (type === "threeHours") {
-
-        const button =
-            document.querySelector(
-                '.injection-complete[data-type="threeHours"]'
-            );
-
-        const doseElement =
-            result.querySelector(".result-dose");
-
-        if (
-            button &&
-            doseElement &&
-            button.dataset.completed !== "true"
-        ) {
-
-            const dose =
-                parseInt(
-                    doseElement.textContent.trim(),
-                    10
-                );
-
-            if (dose >= 1) {
-                button.style.display = "block";
-            }
-        }
-    }
-
-
-    /* =========================
-       夜
-       1単位以上なら完了ボタン
-       ========================= */
-
-    if (type === "dinner") {
-
-        const button =
-            document.querySelector(
-                '.injection-complete[data-type="dinner"]'
-            );
-
-        const doseElement =
-            result.querySelector(".result-dose");
-
-        if (
-            button &&
-            doseElement &&
-            button.dataset.completed !== "true"
-        ) {
-
-            const dose =
-                parseInt(
-                    doseElement.textContent.trim(),
-                    10
-                );
-
-            if (dose >= 1) {
-                button.style.display = "block";
-            }
-        }
-    }
-
-
-    /* =========================
-       就寝前
-       1単位以上なら完了ボタン
-       ========================= */
-
-    if (type === "bedtime") {
-
-        const button =
-            document.querySelector(
-                '.injection-complete[data-type="bedtime"]'
-            );
-
-        const doseElement =
-            result.querySelector(".result-dose");
-
-        if (
-            button &&
-            doseElement &&
-            button.dataset.completed !== "true"
-        ) {
-
-            const dose =
-                parseInt(
-                    doseElement.textContent.trim(),
-                    10
-                );
-
-            if (dose >= 1) {
-                button.style.display = "block";
-            }
-        }
-       
-    }
-
-// 0単位・計算対象外では完了ボタンを表示しない
-const finalButton = document.querySelector(
-    '.injection-complete[data-type="' + type + '"]'
-);
-
-if (finalButton && finalButton.dataset.completed !== "true") {
-    const doseElement = result.querySelector(".result-dose");
-    const match = doseElement
-        ? doseElement.textContent.trim().match(/^(\d+)単位$/)
-        : null;
-
-    if (!match || Number(match[1]) === 0) {
-        finalButton.style.display = "none";
-    }
+const STORAGE_KEY="bloodSugarData",LATEST_KEY="latestBloodSugarResult",COMPLETED_KEY="completedSteps";
+function getToday(){const now=new Date();return now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0")}
+// この画面を開いた日付を固定し、前日の古い画面が翌日の保存データを変更しないようにする。
+const PAGE_DATE=getToday();
+const DAY_STATE_KEY="bloodSugarAppDay";
+// ページごとの識別子。再読み込み前のページが作った送信ロックだけを解除するために使う。
+const PAGE_INSTANCE_ID=PAGE_DATE+"|"+Date.now()+"|"+Math.random().toString(36).slice(2);
+function isCurrentPageDate(){return PAGE_DATE===getToday()}
+function initializeDayState(){
+ // 保存済みデータの日付を優先して確認し、日付管理キーが未作成という理由だけで当日データを消さない。
+ const today=getToday();
+ const knownDay=localStorage.getItem(DAY_STATE_KEY);
+ const saved=localStorage.getItem(STORAGE_KEY);
+ let savedDate=null,invalidSaved=false;
+ if(saved){
+  try{
+   const data=JSON.parse(saved);
+   savedDate=(typeof data.date==="string"&&data.date)?data.date:null;
+  }catch(error){invalidSaved=true;}
+ }
+ // 明確に別日の日付が保存されている場合、または保存データ自体が壊れている場合だけ全日次状態を初期化。
+ // DAY_STATE_KEYがない初回移行時でも、保存データが今日の日付なら維持する。
+ const savedIsToday=savedDate===today;
+ const savedIsOtherDay=!!savedDate&&savedDate!==today;
+ const resetNeeded=invalidSaved||savedIsOtherDay||(!saved&&!!knownDay&&knownDay!==today)||(!savedDate&&!saved&&!!knownDay&&knownDay!==today);
+ if(resetNeeded)clearDailyStorage();
+ // 前日から残った送信中ロック、または期限切れのロックを回収する。
+ const zeroSending=localStorage.getItem("dailySummaryZeroSendingBedtimeBg");
+ if(zeroSending){
+  const parts=zeroSending.split("|");
+  const startedAt=Number(parts[2]);
+  if(!zeroSending.startsWith(today+"|")||!Number.isFinite(startedAt)||Date.now()-startedAt>20000){
+   localStorage.removeItem("dailySummaryZeroSendingBedtimeBg");
+  }
+ }
+ const bedtimeSending=localStorage.getItem("dailySummaryBedtimeSendingDate");
+ if(bedtimeSending&&!bedtimeSending.startsWith(today))localStorage.removeItem("dailySummaryBedtimeSendingDate");
+ localStorage.setItem(DAY_STATE_KEY,today);
 }
-
-}
-/* =========================
-   最新の結果を赤字にする
-   ========================= */
-
-function setLatestResult(type) {
-
-    document.querySelectorAll(".result").forEach(function(result) {
-        result.classList.remove("latest-result");
-    });
-
-
-    if (!type) {
-        return;
-    }
-
-
-    const result =
-        document.getElementById(type + "Result");
-
-    if (result) {
-        result.classList.add("latest-result");
-    }
-}
-
-
-/* =========================
-   データ保存
-   ========================= */
-
-const STORAGE_KEY = "bloodSugarData";
-const LATEST_KEY = "latestBloodSugarResult";
-const COMPLETED_KEY = "completedSteps";
-
-function getCompletedSteps() {
-    try {
-        return JSON.parse(localStorage.getItem(COMPLETED_KEY)) || {};
-    } catch (e) {
-        return {};
-    }
-}
-
-function saveCompletedStep(type) {
-    const completed = getCompletedSteps();
-    completed[type] = true;
-    localStorage.setItem(COMPLETED_KEY, JSON.stringify(completed));
-}
-
-function completeInjection(type) {
-
-/* 就寝前0単位は、2分タイマーで自動完了する */
-    if (type === "bedtime" && getDose("bedtime") === 0) {
-        return;
-    }
-
-    /* =========================
-       完了状態を保存
-       ========================= */
-
-    saveCompletedStep(type);
-
-
-    /* =========================
-       ボタンを完了済みにする
-       ========================= */
-
-    const button =
-        document.querySelector(
-            '.injection-complete[data-type="' + type + '"]'
-        );
-
-    if (button) {
-        button.dataset.completed = "true";
-        button.style.display = "none";
-    }
-
-
-    /* =========================
-       入力欄をロック
-       ========================= */
-
-    const input =
-        document.getElementById(type);
-
-    if (input) {
-
-        input.disabled = true;
-
-        const item =
-            input.closest(".item");
-
-        const confirmButton =
-            item
-                ? item.querySelector(".confirm-button")
-                : null;
-
-        if (confirmButton) {
-            confirmButton.disabled = true;
-        }
-    }
-
-
-    /* =========================
-       LINE通知
-       ========================= */
-
-    /* 朝 → LINE送信 → 昼へ */
-
-    if (type === "morning") {
-
-        sendLineNotification({
-            type: "morning",
-            bg: document.getElementById("morning").value,
-            dose: getDose("morning")
-        });
-
-        const lunch =
-            document.getElementById("lunch");
-
-        if (lunch) {
-            lunch.focus();
-            lunch.scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-            });
-        }
-    }
-
-
-    /* 昼 → LINE送信 → 3時間後へ */
-
-    else if (type === "lunch") {
-
-        sendLineNotification({
-            type: "lunch",
-            bg: document.getElementById("lunch").value,
-            dose: getDose("lunch"),
-            special:
-                document.getElementById("lunchSpecial").checked
-        });
-
-        const threeHours =
-            document.getElementById("threeHours");
-
-        if (threeHours) {
-            threeHours.focus();
-            threeHours.scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-            });
-        }
-    }
-
-
-    /* 3時間後 → LINE送信 → トレシーバへ */
-
-    else if (type === "threeHours") {
-
-        sendLineNotification({
-            type: "threeHours",
-            bg: document.getElementById("threeHours").value,
-            dose: getDose("threeHours")
-        });
-
-        const threeHoursResult =
-            document.getElementById("threeHoursResult");
-
-        const tresibaResult =
-            document.getElementById("tresibaResult");
-
-        if (threeHoursResult) {
-            threeHoursResult.classList.remove("latest-result");
-        }
-
-        if (tresibaResult) {
-            tresibaResult.classList.add("latest-result");
-        }
-
-        localStorage.removeItem("threeHoursJudgedAt");
-
-        const tresibaButton =
-            document.querySelector(
-                '.injection-complete[data-type="tresiba"]'
-            );
-
-        if (tresibaButton) {
-            tresibaButton.style.display = "block";
-        }
-
-        if (tresibaResult) {
-            tresibaResult.scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-            });
-        }
-    }
-
-
-    /* トレシーバ → LINE送信 → 夜へ */
-
-    else if (type === "tresiba") {
-
-        sendLineNotification({
-            type: "tresiba"
-        });
-
-        const tresibaResult =
-            document.getElementById("tresibaResult");
-
-        if (tresibaResult) {
-            tresibaResult.classList.remove("latest-result");
-        }
-
-        const dinner =
-            document.getElementById("dinner");
-
-        if (dinner) {
-            dinner.focus();
-            dinner.scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-            });
-        }
-    }
-
-
-    /* 夜 → LINE送信 → 就寝前へ */
-
-    else if (type === "dinner") {
-
-        sendLineNotification({
-            type: "dinner",
-            bg: document.getElementById("dinner").value,
-            dose: getDose("dinner"),
-            special:
-                document.getElementById("dinnerSpecial").checked
-        });
-
-        const bedtime =
-            document.getElementById("bedtime");
-
-        if (bedtime) {
-            bedtime.focus();
-            bedtime.scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-            });
-        }
-    }
-
-
- /* 就寝前 → 1日まとめLINE → 1日終了 */
-
-else if (type === "bedtime") {
-
-    const dose = getDose("bedtime");
-
-    /* 1単位以上の場合は、完了ボタンでまとめLINEを送信 */
-    if (dose >= 1) {
-
-        sendLineNotification(
-            buildDailySummaryPayload()
-        ).then(function(success) {
-
-            if (success) {
-                finishDayAndReset();
-            } else {
-                /* 送信失敗時は、再処理できるよう完了状態を戻す */
-                const completed = getCompletedSteps();
-                completed.bedtime = false;
-
-                localStorage.setItem(
-                    COMPLETED_KEY,
-                    JSON.stringify(completed)
-                );
-
-                alert("まとめLINEを送信できませんでした。通信状態を確認して、もう一度お試しください。");
-
-                location.reload();
-            }
-        });
-
-    } else {
-        /* 0単位の場合は、2分タイマーで自動終了する */
-        return;
-    }
-}
-
-
-    /* =========================
-       次の段階を解禁
-       ========================= */
-
-    applyCompletedState();
-}
-
-function isThreeHoursStageFinished() {
-    const completed = getCompletedSteps();
-
-    // 通常の「注射完了」
-    if (completed.threeHours) {
-        return true;
-    }
-
-    // 3時間後が0単位の場合
-    // 判定から2分経過したら自動的にこの段階を終了扱いにする
-    const judgedAt =
-        localStorage.getItem("threeHoursJudgedAt");
-
-    if (!judgedAt) {
-        return false;
-    }
-
-    const dose = getDose("threeHours");
-
-    if (dose !== 0) {
-        return false;
-    }
-
-    return (
-        Date.now() - Number(judgedAt)
-        >= 2 * 60 * 1000
-    );
-}
-
-
-function applyCompletedState() {
-    const completed = getCompletedSteps();
-    const threeHoursFinished = isThreeHoursStageFinished();
-
-    const unlocked = {
-        morning: !localStorage.getItem("pendingBedtimeDate"),
-        lunch: !!completed.morning,
-        threeHours: !!completed.lunch,
-        dinner: !!completed.tresiba,
-        bedtime: !!completed.dinner
-    };
-
-    // 入力欄と確認ボタンのロック
-    Object.keys(unlocked).forEach(function(type) {
-        const input = document.getElementById(type);
-
-        if (!input) return;
-
-        const locked = !unlocked[type] || !!completed[type];
-        input.disabled = locked;
-
-        const item = input.closest(".item");
-        const confirmButton = item
-            ? item.querySelector(".confirm-button")
-            : null;
-
-        if (confirmButton) {
-            confirmButton.disabled = locked;
-        }
-    });
-
-    // 特殊チェックボックスのロック
-    const lunchSpecial = document.getElementById("lunchSpecial");
-    if (lunchSpecial) {
-        lunchSpecial.disabled =
-            !unlocked.lunch || !!completed.lunch;
-    }
-
-    const dinnerSpecial = document.getElementById("dinnerSpecial");
-    if (dinnerSpecial) {
-        dinnerSpecial.disabled =
-            !unlocked.dinner || !!completed.dinner;
-    }
-
-    // 完了ボタンは、条件を満たす場合だけ表示
-    document.querySelectorAll(".injection-complete").forEach(function(button) {
-        const type = button.dataset.type;
-
-        if (completed[type]) {
-            button.dataset.completed = "true";
-            button.style.display = "none";
-            return;
-        }
-
-        button.dataset.completed = "false";
-        button.style.display = "none";
-
-        // トレシーバは3時間後終了済みかつ17:45以降
-        if (type === "tresiba") {
-            const now = new Date();
-            const minutes = now.getHours() * 60 + now.getMinutes();
-
-            if (
-                threeHoursFinished &&
-                minutes >= 17 * 60 + 45 &&
-                unlocked.threeHours
-            ) {
-                button.style.display = "block";
-            }
-            return;
-        }
-
-        // 未解禁の段階は表示しない
-        if (!unlocked[type]) return;
-
-        const dose = getDose(type);
-
-        if (type === "morning" || type === "lunch") {
-            if (dose !== null) {
-                button.style.display = "block";
-            }
-            return;
-        }
-
-        // 3時間後・夜・就寝前は1単位以上の場合だけ表示
-        if (
-            (type === "threeHours" ||
-             type === "dinner" ||
-             type === "bedtime") &&
-            dose !== null &&
-            dose >= 1
-        ) {
-            button.style.display = "block";
-        }
-    });
-}
-
-  /* =========================
-   LINE通知
-   ========================= */
-
-async function sendLineNotification(data) {
-
-    try {
-
-        const response = await fetch(
-            "https://kettou-line.yts-bloom-style.workers.dev/notify",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify(data)
-            }
-        );
-
-        if (!response.ok) {
-
-            console.error(
-                "LINE通知エラー:",
-                await response.text()
-            );
-
-            return false;
-        }
-
-        console.log("LINE通知送信成功");
-
-        return true;
-
-    } catch (error) {
-
-        console.error(
-            "LINE通知通信エラー:",
-            error
-        );
-
-        return false;
-    }
-}
-/* =========================
-   インスリン量を取得
-   ========================= */
-
-function getDose(type) {
-    const result = document.getElementById(type + "Result");
-
-    if (!result || result.style.display === "none") {
-        return null;
-    }
-
-    const doseElement = result.querySelector(".result-dose");
-
-    if (!doseElement) {
-        return null;
-    }
-
-    const match = doseElement.textContent.match(/^(\d+)単位$/);
-
-    if (!match) {
-        return null;
-    }
-
-    return Number(match[1]);
-}
-
-/* 現在入力されている血糖値から、その場で単位数を再計算する
-   （表示中の古い判定結果を使わない） */
-function getCurrentDose(type) {
-    const input = document.getElementById(type);
-
-    if (!input || input.value === "") {
-        return null;
-    }
-
-    let special = false;
-
-    if (type === "lunch") {
-        special = document.getElementById("lunchSpecial").checked;
-    }
-
-    if (type === "dinner") {
-        special = document.getElementById("dinnerSpecial").checked;
-    }
-
-    const answer = calculate(type, input.value, special);
-
-    if (typeof answer !== "string") {
-        return null;
-    }
-
-    const match = answer.match(/^(\d+)単位$/);
-
-    if (!match) {
-        return null;
-    }
-
-    let dose = Number(match[1]);
-
-    // 3時間後の時間帯別補正を反映
-    if (type === "threeHours") {
-        const now = new Date();
-        const minutes = now.getHours() * 60 + now.getMinutes();
-
-        if (minutes >= 16 * 60 + 30) {
-            const bg = Number(input.value);
-            dose = bg >= 450 ? 1 : 0;
-        }
-    }
-
-    return dose;
-}
-
-function isStepCompleted(type) {
-    const completed = getCompletedSteps();
-    return completed[type] === true;
-}
- /* =========================
-    1日分のLINE通知データ
-    ========================= */
-
-function buildDailySummaryPayload() {
-
-    return {
-
-        type: "dailySummary",
-
-        morning: {
-            bg: document.getElementById("morning").value,
-            dose: getCurrentDose("morning")
-        },
-
-        lunch: {
-            bg: document.getElementById("lunch").value,
-            dose: getCurrentDose("lunch"),
-            special: document.getElementById("lunchSpecial").checked
-        },
-
-        threeHours: {
-            bg: document.getElementById("threeHours").value,
-            dose: getCurrentDose("threeHours")
-        },
-
-        dinner: {
-            bg: document.getElementById("dinner").value,
-            dose: getCurrentDose("dinner"),
-            special: document.getElementById("dinnerSpecial").checked
-        },
-
-        bedtime: {
-            bg: document.getElementById("bedtime").value,
-            dose: getCurrentDose("bedtime")
-        }
-    };
-}
-
-/* =========================
-   1日分の処理終了後にリセット
-   ========================= */
-
-function finishDayAndReset() {
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(LATEST_KEY);
-    localStorage.removeItem(COMPLETED_KEY);
-    localStorage.removeItem("tresibaTransitionDate");
-
-    localStorage.removeItem("threeHoursZeroSentBg");
-    localStorage.removeItem("threeHoursJudgedAt");
-
-    localStorage.removeItem("dailySummaryZeroSentBedtimeBg");
-    localStorage.removeItem("dailySummaryZeroSendingBedtimeBg");
-    localStorage.removeItem("bedtimeJudgedAt");
-    localStorage.removeItem("pendingBedtimeDate");
-
-    location.reload();
-}
-
-/* =========================
-   就寝前0単位のまとめLINE
-   同じ血糖値の重複送信を防止
-   血糖値変更時は新しい内容を送信
-   ========================= */
-
-async function sendDailySummaryForBedtimeZero() {
-    const input = document.getElementById("bedtime");
-    if (!input || input.value.trim() === "") return;
-
-    const sentKey = "dailySummaryZeroSentBedtimeBg";
-    const sendingKey = "dailySummaryZeroSendingBedtimeBg";
-    const judgedAtKey = "bedtimeJudgedAt";
-
-    const dose = getCurrentDose("bedtime");
-
-    // 0単位でなければ自動終了タイマーを解除
-    if (dose !== 0) {
-        localStorage.removeItem(judgedAtKey);
-        return;
-    }
-
-    // 最初の0単位判定時刻を保存
-    if (!localStorage.getItem(judgedAtKey)) {
-        localStorage.setItem(
-            judgedAtKey,
-            Date.now().toString()
-        );
-    }
-
-    // 送信処理がすでに動いていれば、そちらに任せる
-    if (localStorage.getItem(sendingKey)) {
-        return;
-    }
-
-    // 現在の血糖値を取得
-    let bg = input.value.trim();
-
-    // 同じ血糖値を送信済みなら再送しない
-    if (localStorage.getItem(sentKey) === bg) {
-        return;
-    }
-
-    // 送信中の値を記録
-    localStorage.setItem(sendingKey, bg);
-
-    try {
-        while (true) {
-            // 現在の入力値から最新の内容を作成
-            const currentBg = input.value.trim();
-            const currentDose = getCurrentDose("bedtime");
-
-            // 入力が空、または0単位でなくなった場合は中止
-            if (currentBg === "" || currentDose !== 0) {
-                localStorage.removeItem(judgedAtKey);
-                break;
-            }
-
-            // 最新の値がすでに送信済みなら終了
-            if (localStorage.getItem(sentKey) === currentBg) {
-                break;
-            }
-
-            bg = currentBg;
-
-            const payload = buildDailySummaryPayload();
-            const success = await sendLineNotification(payload);
-
-            if (!success) {
-                alert(
-                    "就寝前のまとめLINEを送信できませんでした。" +
-                    "通信状態を確認して、再度判定してください。"
-                );
-                break;
-            }
-
-            // 送信成功した血糖値を記録
-            localStorage.setItem(sentKey, bg);
-
-            // 送信中に血糖値が変わっていたら、最新値を再送する
-            if (input.value.trim() !== bg) {
-                continue;
-            }
-
-            break;
-        }
-    } catch (error) {
-        console.error("就寝前のまとめLINE送信エラー:", error);
-
-        alert(
-            "就寝前のまとめLINE送信中にエラーが発生しました。" +
-            "通信状態を確認して、再度判定してください。"
-        );
-    } finally {
-        localStorage.removeItem(sendingKey);
-    }
-}
-
-
-function getToday() {
-
-    const now = new Date();
-
-    return now.getFullYear() + "-" +
-        String(now.getMonth() + 1).padStart(2, "0") + "-" +
-        String(now.getDate()).padStart(2, "0");
-}
-
-
-function saveData() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    const pendingDate = localStorage.getItem("pendingBedtimeDate");
-    let dataDate = pendingDate || getToday();
-
-    /* 日付が変わっていても、就寝前が未完了なら前日の日付を維持 */
-    if (!pendingDate && saved) {
-        try {
-            const oldData = JSON.parse(saved);
-            const completed = getCompletedSteps();
-
-            if (
-                oldData.date &&
-                oldData.date !== getToday() &&
-                !completed.bedtime
-            ) {
-                dataDate = oldData.date;
-                localStorage.setItem(
-                    "pendingBedtimeDate",
-                    oldData.date
-                );
-            }
-        } catch (error) {
-            console.error("保存データの読み込みに失敗しました", error);
-        }
-    }
-
-    const data = {
-        date: dataDate,
-        morning: document.getElementById("morning").value,
-        lunch: document.getElementById("lunch").value,
-        threeHours: document.getElementById("threeHours").value,
-        dinner: document.getElementById("dinner").value,
-        bedtime: document.getElementById("bedtime").value,
-        lunchSpecial: document.getElementById("lunchSpecial").checked,
-        dinnerSpecial: document.getElementById("dinnerSpecial").checked
-    };
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-/* =========================
-   今日のデータを復元
-   ========================= */
-
-function loadData() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if (!saved) {
-        applyCompletedState();
-        return;
-    }
-
-    let data;
-
-    try {
-        data = JSON.parse(saved);
-    } catch (error) {
-        console.error("保存データの読み込みに失敗しました", error);
-        applyCompletedState();
-        return;
-    }
-
-    const completed = getCompletedSteps();
-
-    /* 前日の就寝前まで完了していれば、新しい日にリセット */
-    if (data.date !== getToday() && completed.bedtime) {
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem(LATEST_KEY);
-        localStorage.removeItem(COMPLETED_KEY);
-        localStorage.removeItem("tresibaTransitionDate");
-        localStorage.removeItem("threeHoursZeroSentBg");
-        localStorage.removeItem("threeHoursJudgedAt");
-        localStorage.removeItem("dailySummaryZeroSentBedtimeBg");
-        localStorage.removeItem("dailySummaryZeroSendingBedtimeBg");
-        localStorage.removeItem("bedtimeJudgedAt");
-        localStorage.removeItem("pendingBedtimeDate");
-
-        document.getElementById("morning").value = "";
-        document.getElementById("lunch").value = "";
-        document.getElementById("threeHours").value = "";
-        document.getElementById("dinner").value = "";
-        document.getElementById("bedtime").value = "";
-        document.getElementById("lunchSpecial").checked = false;
-        document.getElementById("dinnerSpecial").checked = false;
-
-        applyCompletedState();
-        return;
-    }
-
-    /* 日付が変わっても就寝前が未完了なら、前日のデータを維持 */
-    if (data.date !== getToday() && !completed.bedtime) {
-        localStorage.setItem("pendingBedtimeDate", data.date);
-    }
-
-    /* 保存されているデータを復元 */
-    document.getElementById("morning").value = data.morning || "";
-    document.getElementById("lunch").value = data.lunch || "";
-    document.getElementById("threeHours").value = data.threeHours || "";
-    document.getElementById("dinner").value = data.dinner || "";
-    document.getElementById("bedtime").value = data.bedtime || "";
-    document.getElementById("lunchSpecial").checked = !!data.lunchSpecial;
-    document.getElementById("dinnerSpecial").checked = !!data.dinnerSpecial;
-
-    updateAll();
-
-    const latest = localStorage.getItem(LATEST_KEY);
-    setLatestResult(latest);
-
-    applyCompletedState();
-}
-
-/* =========================
-   入力内容を確認
-   ========================= */
-
-document.querySelectorAll(".confirm-button").forEach(function(button) {
-
-    button.addEventListener("click", function() {
-
-        const confirmation =
-            document.getElementById("confirmation");
-
-        const currentItem =
-            button.closest(".item");
-
-        let currentType = "";
-
-        if (currentItem.querySelector("#morning")) {
-            currentType = "morning";
-
-        } else if (currentItem.querySelector("#lunch")) {
-            currentType = "lunch";
-
-        } else if (currentItem.querySelector("#threeHours")) {
-            currentType = "threeHours";
-
-        } else if (currentItem.querySelector("#dinner")) {
-            currentType = "dinner";
-
-        } else if (currentItem.querySelector("#bedtime")) {
-            currentType = "bedtime";
-        }
-
-        confirmation.dataset.currentType =
-            currentType;
-
-
-        const morning =
-            document.getElementById("morning").value;
-
-        const lunch =
-            document.getElementById("lunch").value;
-
-        const threeHours =
-            document.getElementById("threeHours").value;
-
-        const dinner =
-            document.getElementById("dinner").value;
-
-        const bedtime =
-            document.getElementById("bedtime").value;
-
-        const lunchSpecial =
-            document.getElementById("lunchSpecial").checked;
-
-        const dinnerSpecial =
-            document.getElementById("dinnerSpecial").checked;
-
-
-        let text = "";
-
-
-        text +=
-            '<div class="confirmation-line">朝：' +
-            (morning === ""
-                ? "未入力"
-                : morning + " mg/dL") +
-            '</div>';
-
-
-        text +=
-            '<div class="confirmation-line">昼：' +
-            (lunch === ""
-                ? "未入力"
-                : lunch + " mg/dL") +
-            (lunchSpecial
-                ? "（外食・丼・揚げ物）"
-                : "") +
-            '</div>';
-
-
-        text +=
-            '<div class="confirmation-line">3時間後：' +
-            (threeHours === ""
-                ? "未入力"
-                : threeHours + " mg/dL") +
-            '</div>';
-
-
-        text +=
-            '<div class="confirmation-line">18時：トレシーバ 7単位</div>';
-
-
-        text +=
-            '<div class="confirmation-line">夜：' +
-            (dinner === ""
-                ? "未入力"
-                : dinner + " mg/dL") +
-            (dinnerSpecial
-                ? "（外食・丼・揚げ物）"
-                : "") +
-            '</div>';
-
-
-        text +=
-            '<div class="confirmation-line">就寝前：' +
-            (bedtime === ""
-                ? "未入力"
-                : bedtime + " mg/dL") +
-            '</div>';
-
-
-        document.getElementById(
-            "confirmationText"
-        ).innerHTML = text;
-
-
-        button.parentNode.insertBefore(
-            confirmation,
-            button.nextSibling
-        );
-
-
-        confirmation.style.display =
-            "block";
-
-
-        confirmation.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-
-    });
-
+initializeDayState();
+// 再読み込み・タブを閉じた際、当該ページが所有する送信ロックを解除する。
+// 別タブが所有するロックはトークンが異なるため解除しない。
+window.addEventListener("pagehide",function(){
+ const key="dailySummaryZeroSendingBedtimeBg";
+ const token=localStorage.getItem(key);
+ if(token&&token.endsWith("|"+PAGE_INSTANCE_ID))localStorage.removeItem(key);
 });
-
-/* =========================
-   この内容で判定する
-   ========================= */
-
-document.getElementById("calculateButton").addEventListener(
-    "click",
-    function() {
-
-        const confirmation =
-            document.getElementById("confirmation");
-
-        const currentType =
-            confirmation.dataset.currentType;
-
-
-        /* 判定 */
-
-        updateAll();
-
-
-        /* =========================
-           3時間後の時間帯別補正
-           ========================= */
-
-        if (currentType === "threeHours") {
-
-            const now = new Date();
-
-            const minutes =
-                now.getHours() * 60 + now.getMinutes();
-
-            const cutoff =
-                16 * 60 + 30;
-
-            /*
-             * 16:30以降の場合
-             * 原則0単位
-             * ただし血糖値450以上は1単位
-             */
-
-            if (minutes >= cutoff) {
-
-                const bg =
-                    Number(
-                        document.getElementById(
-                            "threeHours"
-                        ).value
-                    );
-
-                const result =
-                    document.getElementById(
-                        "threeHoursResult"
-                    );
-
-                const doseElement =
-                    result.querySelector(
-                        ".result-dose"
-                    );
-
-                if (doseElement) {
-
-                    const dose =
-                        bg >= 450 ? 1 : 0;
-
-                    doseElement.textContent =
-                        dose + "単位";
-                }
-            }
-        }
-
-
-        /* 最新の時間帯を赤字にする */
-
-        setLatestResult(currentType);
-
-
-        /* 最新の時間帯を保存 */
-
-        localStorage.setItem(
-            LATEST_KEY,
-            currentType
-        );
-
-
-         /* =========================
-           3時間後 0単位
-           2分タイマー開始
-           同じ血糖値の重複送信を防止
-           ========================= */
-
-        if (currentType === "threeHours") {
-
-            const dose = getDose("threeHours");
-
-            if (dose === 0) {
-
-                const bg =
-                    document.getElementById(
-                        "threeHours"
-                    ).value.trim();
-
-                localStorage.setItem(
-                    "threeHoursJudgedAt",
-                    Date.now().toString()
-                );
-
-                const sentBgKey =
-                    "threeHoursZeroSentBg";
-
-                const lastSentBg =
-                    localStorage.getItem(sentBgKey);
-
-                if (lastSentBg !== bg) {
-
-                    /* 送信前に今回の血糖値を記録 */
-                    localStorage.setItem(
-                        sentBgKey,
-                        bg
-                    );
-
-                    sendLineNotification({
-                        type: "threeHours",
-                        bg: bg,
-                        dose: dose
-                    }).then(function(success) {
-
-                        /* 送信失敗時は再送信できるよう記録を解除 */
-                        if (
-                            !success &&
-                            localStorage.getItem(sentBgKey) === bg
-                        ) {
-                            localStorage.removeItem(
-                                sentBgKey
-                            );
-                        }
-                    });
-                }
-            }
-        }
-
-
-        /* =========================
-           就寝前 0単位
-           1日まとめLINE
-           ========================= */
-
-        if (currentType === "bedtime") {
-    const dose = getCurrentDose("bedtime");
-
-    if (dose === 0) {
-        sendDailySummaryForBedtimeZero();
-    } else {
-        // 1単位以上、または計算対象外になったら
-        // 0単位用の自動終了タイマーを解除
-        localStorage.removeItem("bedtimeJudgedAt");
-    }
+function savedDataMatchesDate(expectedDate){
+ const saved=localStorage.getItem(STORAGE_KEY);if(!saved)return true;
+ try{const data=JSON.parse(saved);return !data.date||data.date===expectedDate}catch(error){console.error("保存データの日付確認に失敗しました",error);return false}
 }
-
-       /* 入力内容を保存 */
-saveData();
-
-/* 補正後の単位数・完了状態に合わせてボタンを更新 */
-applyCompletedState();
-
-/* 確認画面を閉じる */
-confirmation.style.display = "none";
-
-    }
-);
-function checkTresibaTime() {
-
-    const threeHoursResult =
-        document.getElementById("threeHoursResult");
-
-    const tresibaResult =
-        document.querySelector("#tresibaResult");
-
-    if (!threeHoursResult || !tresibaResult) {
-        return;
-    }
-
-    /*
-     * 3時間後が完了していなければ
-     * トレシーバには進まない
-     */
-    if (!isThreeHoursStageFinished()) {
-        return;
-    }
-
-    const doseElement =
-        threeHoursResult.querySelector(".result-dose");
-
-    if (!doseElement || threeHoursResult.style.display === "none") {
-        return;
-    }
-
-    const now = new Date();
-    const minutes =
-        now.getHours() * 60 + now.getMinutes();
-
-    const transitionDate =
-        localStorage.getItem("tresibaTransitionDate");
-
-    const today =
-        getToday();
-
-    /*
-     * 17:45前、または今日すでに移行済みなら何もしない
-     */
-    if (
-        minutes < 17 * 60 + 45 ||
-        transitionDate === today
-    ) {
-        return;
-    }
-
-    /*
-     * トレシーバを次の段階として表示
-     */
-    tresibaResult.classList.add("latest-result");
-
-    localStorage.setItem(
-        LATEST_KEY,
-        "tresiba"
-    );
-
-    localStorage.setItem(
-        "tresibaTransitionDate",
-        today
-    );
-
-    const tresibaButton =
-        document.querySelector(
-            '.injection-complete[data-type="tresiba"]'
-        );
-
-    if (
-        tresibaButton &&
-        tresibaButton.dataset.completed !== "true"
-    ) {
-        tresibaButton.style.display = "block";
-    }
-
-    tresibaResult.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-    });
+function clearDailyStorage(){
+ [STORAGE_KEY,LATEST_KEY,COMPLETED_KEY,"tresibaTransitionDate","threeHoursZeroSentBg","threeHoursJudgedAt","threeHoursJudgedDose","dailySummaryZeroSentBedtimeBg","dailySummaryZeroSendingBedtimeBg","bedtimeJudgedAt","pendingBedtimeDate","dailySummaryBedtimeSentDate","dailySummaryBedtimeSendingDate"].forEach(key=>localStorage.removeItem(key));
 }
-
-setInterval(function() {
-
-    checkTresibaTime();
-
-    /* =========================
-       3時間後 0単位
-       2分経過で自動的に完了
-       ========================= */
-
-    if (isThreeHoursStageFinished()) {
-
-        const completed =
-            getCompletedSteps();
-
-        if (!completed.threeHours) {
-
-            saveCompletedStep("threeHours");
-
-            
-            const threeHoursInput =
-                document.getElementById("threeHours");
-
-            if (threeHoursInput) {
-
-                threeHoursInput.disabled = true;
-
-                const item =
-                    threeHoursInput.closest(".item");
-
-                const confirmButton =
-                    item
-                        ? item.querySelector(".confirm-button")
-                        : null;
-
-                if (confirmButton) {
-                    confirmButton.disabled = true;
-                }
-            }
-
-            /* 3時間後の判定時刻を解除 */
-            localStorage.removeItem(
-                "threeHoursJudgedAt"
-            );
-
-            /* トレシーバを解禁 */
-            applyCompletedState();
-
-            
-                   }
-    }
-
-/* =========================
-   就寝前 0単位
-   2分経過後、送信成功を確認して自動終了
-   ========================= */
-
-const bedtimeJudgedAt =
-    localStorage.getItem("bedtimeJudgedAt");
-
-if (
-    bedtimeJudgedAt &&
-    Date.now() - Number(bedtimeJudgedAt) >= 120000
-) {
-    const input = document.getElementById("bedtime");
-    const currentBg = input ? input.value.trim() : "";
-    const currentDose = getCurrentDose("bedtime");
-
-    const sentBg =
-        localStorage.getItem("dailySummaryZeroSentBedtimeBg");
-
-    const sendingBg =
-        localStorage.getItem("dailySummaryZeroSendingBedtimeBg");
-
-    /*
-     * 次の条件をすべて満たした場合だけ終了する
-     * ・現在の単位数が0
-     * ・現在の血糖値のまとめLINEが送信成功済み
-     * ・送信処理が残っていない
-     */
-    if (
-        currentDose === 0 &&
-        sentBg === currentBg &&
-        !sendingBg
-    ) {
-        const completed = getCompletedSteps();
-
-        if (!completed.bedtime) {
-            saveCompletedStep("bedtime");
-        }
-
-        finishDayAndReset();
-        return;
-    }
+function getCompletedSteps(){try{return JSON.parse(localStorage.getItem(COMPLETED_KEY))||{}}catch(e){return {}}}
+function saveCompletedStep(type){if(!isCurrentPageDate())return;const completed=getCompletedSteps();completed[type]=true;localStorage.setItem(COMPLETED_KEY,JSON.stringify(completed))}
+function finishDayAndReset(expectedDate=PAGE_DATE){
+ if(!expectedDate||expectedDate!==PAGE_DATE||!isCurrentPageDate())return;
+ if(!savedDataMatchesDate(expectedDate))return;
+ clearDailyStorage();
+ localStorage.setItem(DAY_STATE_KEY,getToday());
+ location.reload();
 }
-
-}, 5000);
-
+function getDose(type){const result=document.getElementById(type+"Result");if(!result||result.style.display==="none")return null;const doseElement=result.querySelector(".result-dose");if(!doseElement)return null;const match=doseElement.textContent.match(/^(\d+)単位$/);if(!match)return null;return Number(match[1])}
+function getCurrentDose(type){const input=document.getElementById(type);if(!input||input.value==="")return null;let special=false;if(type==="lunch")special=document.getElementById("lunchSpecial").checked;if(type==="dinner")special=document.getElementById("dinnerSpecial").checked;const answer=calculate(type,input.value,special);if(typeof answer!=="string")return null;const match=answer.match(/^(\d+)単位$/);if(!match)return null;let dose=Number(match[1]);if(type==="threeHours"){const now=new Date(),minutes=now.getHours()*60+now.getMinutes();if(minutes>=16*60+30){const bg=Number(input.value);dose=bg>=450?1:0}}return dose}
+function buildDailySummaryPayload(){
+ // まとめLINEは送信時刻から再計算せず、画面で判定・表示された投与量をそのまま使う。
+ // これにより3時間後の16:30ルールが送信時刻によって変化しない。
+ return {type:"dailySummary",morning:{bg:document.getElementById("morning").value,dose:getDose("morning")},lunch:{bg:document.getElementById("lunch").value,dose:getDose("lunch"),special:document.getElementById("lunchSpecial").checked},threeHours:{bg:document.getElementById("threeHours").value,dose:getDose("threeHours")},dinner:{bg:document.getElementById("dinner").value,dose:getDose("dinner"),special:document.getElementById("dinnerSpecial").checked},bedtime:{bg:document.getElementById("bedtime").value,dose:getDose("bedtime")}};
+}
+async function sendLineNotification(data){
+ const controller=new AbortController();
+ const timeoutId=setTimeout(()=>controller.abort(),15000);
+ try{
+  const response=await fetch("https://kettou-line.yts-bloom-style.workers.dev/notify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data),signal:controller.signal});
+  if(!response.ok){console.error("LINE通知エラー:",await response.text());return false}
+  console.log("LINE通知送信成功");return true;
+ }catch(error){console.error("LINE通知通信エラーまたはタイムアウト:",error);return false}
+ finally{clearTimeout(timeoutId)}
+}
+function isThreeHoursStageFinished(){const completed=getCompletedSteps();if(completed.threeHours)return true;const judgedAt=localStorage.getItem("threeHoursJudgedAt");if(!judgedAt)return false;const dose=getDose("threeHours");if(dose!==0)return false;return Date.now()-Number(judgedAt)>=2*60*1000}
+function applyCompletedState(){
+ const completed=getCompletedSteps(),threeHoursFinished=isThreeHoursStageFinished(),unlocked={morning:true,lunch:!!completed.morning,threeHours:!!completed.lunch,dinner:!!completed.tresiba,bedtime:!!completed.dinner};
+ Object.keys(unlocked).forEach(type=>{const input=document.getElementById(type);if(!input)return;const locked=!unlocked[type]||!!completed[type];input.disabled=locked;const item=input.closest(".item"),confirmButton=item?item.querySelector(".confirm-button"):null;if(confirmButton)confirmButton.disabled=locked});
+ const lunchSpecial=document.getElementById("lunchSpecial");if(lunchSpecial)lunchSpecial.disabled=!unlocked.lunch||!!completed.lunch;const dinnerSpecial=document.getElementById("dinnerSpecial");if(dinnerSpecial)dinnerSpecial.disabled=!unlocked.dinner||!!completed.dinner;
+ document.querySelectorAll(".injection-complete").forEach(button=>{const type=button.dataset.type;if(completed[type]){button.dataset.completed="true";button.style.display="none";return}button.dataset.completed="false";button.style.display="none";if(type==="tresiba"){const now=new Date(),minutes=now.getHours()*60+now.getMinutes();if(threeHoursFinished&&minutes>=17*60+45&&unlocked.threeHours)button.style.display="block";return}if(!unlocked[type])return;const dose=getDose(type);if(type==="morning"||type==="lunch"){if(dose!==null)button.style.display="block";return}if((type==="threeHours"||type==="dinner"||type==="bedtime")&&dose!==null&&dose>=1)button.style.display="block"})
+}
+function isStepCompleted(type){return getCompletedSteps()[type]===true}
+function completeInjection(type){
+ if(!isCurrentPageDate())return;
+ if(type==="bedtime"&&getDose("bedtime")===0)return;
+ saveCompletedStep(type);
+ const button=document.querySelector('.injection-complete[data-type="'+type+'"]');if(button){button.dataset.completed="true";button.style.display="none"}
+ const input=document.getElementById(type);if(input){input.disabled=true;const item=input.closest(".item"),confirmButton=item?item.querySelector(".confirm-button"):null;if(confirmButton)confirmButton.disabled=true}
+ if(type==="morning"){sendLineNotification({type:"morning",bg:document.getElementById("morning").value,dose:getDose("morning")});const lunch=document.getElementById("lunch");if(lunch){lunch.focus();lunch.scrollIntoView({behavior:"smooth",block:"center"})}}
+ else if(type==="lunch"){sendLineNotification({type:"lunch",bg:document.getElementById("lunch").value,dose:getDose("lunch"),special:document.getElementById("lunchSpecial").checked});const threeHours=document.getElementById("threeHours");if(threeHours){threeHours.focus();threeHours.scrollIntoView({behavior:"smooth",block:"center"})}}
+ else if(type==="threeHours"){sendLineNotification({type:"threeHours",bg:document.getElementById("threeHours").value,dose:getDose("threeHours")});const threeHoursResult=document.getElementById("threeHoursResult"),tresibaResult=document.getElementById("tresibaResult");if(threeHoursResult)threeHoursResult.classList.remove("latest-result");if(tresibaResult)tresibaResult.classList.add("latest-result");localStorage.removeItem("threeHoursJudgedAt");const tresibaButton=document.querySelector('.injection-complete[data-type="tresiba"]');if(tresibaButton)tresibaButton.style.display="block";if(tresibaResult)tresibaResult.scrollIntoView({behavior:"smooth",block:"center"})}
+ else if(type==="tresiba"){sendLineNotification({type:"tresiba"});const tresibaResult=document.getElementById("tresibaResult");if(tresibaResult)tresibaResult.classList.remove("latest-result");const dinner=document.getElementById("dinner");if(dinner){dinner.focus();dinner.scrollIntoView({behavior:"smooth",block:"center"})}}
+ else if(type==="dinner"){sendLineNotification({type:"dinner",bg:document.getElementById("dinner").value,dose:getDose("dinner"),special:document.getElementById("dinnerSpecial").checked});const bedtime=document.getElementById("bedtime");if(bedtime){bedtime.focus();bedtime.scrollIntoView({behavior:"smooth",block:"center"})}}
+ else if(type==="bedtime"){
+  const dose=getDose("bedtime");
+  if(dose>=1){
+   const bedtimeDate=PAGE_DATE;
+   sendLineNotification(buildDailySummaryPayload()).then(success=>{
+    // 日付が変わった後に前日の送信結果が戻ってきた場合、
+    // 翌日の完了状態や入力データには触れない
+    if(!isCurrentPageDate()||!savedDataMatchesDate(bedtimeDate))return;
+    if(success){
+     finishDayAndReset(bedtimeDate);
+    }else{
+     const completed=getCompletedSteps();
+     completed.bedtime=false;
+     localStorage.setItem(COMPLETED_KEY,JSON.stringify(completed));
+     alert("まとめLINEを送信できませんでした。通信状態を確認して、もう一度お試しください。");
+     location.reload();
+    }
+   })
+  }
+  else return;
+ }
+ applyCompletedState()
+}
+async function sendDailySummaryForBedtimeZero(){
+ if(!isCurrentPageDate())return;
+ const operationDate=PAGE_DATE,input=document.getElementById("bedtime");
+ if(!input||input.value.trim()==="")return;
+ const sentKey="dailySummaryZeroSentBedtimeBg",sendingKey="dailySummaryZeroSendingBedtimeBg",judgedAtKey="bedtimeJudgedAt",dose=getCurrentDose("bedtime");
+ if(dose!==0){localStorage.removeItem(judgedAtKey);return}
+ if(!localStorage.getItem(judgedAtKey))localStorage.setItem(judgedAtKey,Date.now().toString());
+ if(localStorage.getItem(sendingKey))return;
+ let bg=input.value.trim();if(localStorage.getItem(sentKey)===bg)return;
+ const sendingToken=operationDate+"|"+bg+"|"+Date.now()+"|"+PAGE_INSTANCE_ID;localStorage.setItem(sendingKey,sendingToken);
+ try{
+  while(true){
+   if(!isCurrentPageDate()||!savedDataMatchesDate(operationDate))return;
+   const currentBg=input.value.trim(),currentDose=getCurrentDose("bedtime");
+   if(currentBg===""||currentDose!==0){localStorage.removeItem(judgedAtKey);break}
+   if(localStorage.getItem(sentKey)===currentBg)break;
+   bg=currentBg;
+   const payload=buildDailySummaryPayload(),success=await sendLineNotification(payload);
+   // 前日の通信結果で、翌日の送信済み状態や入力を変更しない。
+   if(!isCurrentPageDate()||!savedDataMatchesDate(operationDate))return;
+   if(!success){alert("就寝前のまとめLINEを送信できませんでした。通信状態を確認して、再度判定してください。");break}
+   localStorage.setItem(sentKey,bg);
+   if(input.value.trim()!==bg)continue;
+   break;
+  }
+ }catch(error){
+  if(isCurrentPageDate()&&savedDataMatchesDate(operationDate)){console.error("就寝前のまとめLINE送信エラー:",error);alert("就寝前のまとめLINE送信中にエラーが発生しました。通信状態を確認して、再度判定してください。")}
+ }finally{
+  // 古いタブが翌日の送信中フラグを消さないよう、自分のトークンだけ解除する。
+  if(isCurrentPageDate()&&savedDataMatchesDate(operationDate)&&localStorage.getItem(sendingKey)===sendingToken)localStorage.removeItem(sendingKey);
+ }
+}
+function saveData(){
+ if(!isCurrentPageDate())return;
+ const data={date:PAGE_DATE,morning:document.getElementById("morning").value,lunch:document.getElementById("lunch").value,threeHours:document.getElementById("threeHours").value,dinner:document.getElementById("dinner").value,bedtime:document.getElementById("bedtime").value,lunchSpecial:document.getElementById("lunchSpecial").checked,dinnerSpecial:document.getElementById("dinnerSpecial").checked};
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+}
+function loadData(){
+ const saved=localStorage.getItem(STORAGE_KEY);
+ if(!saved){
+  clearDailyStorage();
+  // ブラウザがフォーム値を復元しても、当日データがない場合は空の新しい日として開始する。
+  ["morning","lunch","threeHours","dinner","bedtime"].forEach(id=>{
+   const input=document.getElementById(id);if(input){input.value="";input.disabled=false;}
+   const result=document.getElementById(id+"Result");if(result){result.style.display="none";result.classList.remove("latest-result");}
+  });
+  document.getElementById("lunchSpecial").checked=false;
+  document.getElementById("dinnerSpecial").checked=false;
+  document.querySelectorAll(".confirm-button").forEach(button=>button.disabled=false);
+  document.querySelectorAll(".injection-complete").forEach(button=>{button.dataset.completed="false";button.style.display="none";});
+  applyCompletedState();
+  return;
+ }
+ let data;
+ try{data=JSON.parse(saved)}catch(error){console.error("保存データの読み込みに失敗しました",error);clearDailyStorage();applyCompletedState();return}
+ if(data.date!==PAGE_DATE||!isCurrentPageDate()){
+  clearDailyStorage();
+  document.getElementById("morning").value="";document.getElementById("lunch").value="";document.getElementById("threeHours").value="";document.getElementById("dinner").value="";document.getElementById("bedtime").value="";document.getElementById("lunchSpecial").checked=false;document.getElementById("dinnerSpecial").checked=false;applyCompletedState();return;
+ }
+ localStorage.removeItem("pendingBedtimeDate");
+ document.getElementById("morning").value=data.morning||"";document.getElementById("lunch").value=data.lunch||"";document.getElementById("threeHours").value=data.threeHours||"";document.getElementById("dinner").value=data.dinner||"";document.getElementById("bedtime").value=data.bedtime||"";document.getElementById("lunchSpecial").checked=!!data.lunchSpecial;document.getElementById("dinnerSpecial").checked=!!data.dinnerSpecial;updateAll();restoreThreeHoursJudgedDose();setLatestResult(localStorage.getItem(LATEST_KEY));applyCompletedState();
+}
+document.querySelectorAll(".confirm-button").forEach(button=>button.addEventListener("click",function(){
+ if(!isCurrentPageDate())return;
+ const confirmation=document.getElementById("confirmation"),currentItem=button.closest(".item");let currentType="";
+ if(currentItem.querySelector("#morning"))currentType="morning";else if(currentItem.querySelector("#lunch"))currentType="lunch";else if(currentItem.querySelector("#threeHours"))currentType="threeHours";else if(currentItem.querySelector("#dinner"))currentType="dinner";else if(currentItem.querySelector("#bedtime"))currentType="bedtime";
+ confirmation.dataset.currentType=currentType;
+ const morning=document.getElementById("morning").value,lunch=document.getElementById("lunch").value,threeHours=document.getElementById("threeHours").value,dinner=document.getElementById("dinner").value,bedtime=document.getElementById("bedtime").value,lunchSpecial=document.getElementById("lunchSpecial").checked,dinnerSpecial=document.getElementById("dinnerSpecial").checked;let text="";
+ text+='<div class="confirmation-line">朝：'+(morning===""?"未入力":morning+" mg/dL")+'</div>';text+='<div class="confirmation-line">昼：'+(lunch===""?"未入力":lunch+" mg/dL")+(lunchSpecial?"（外食・丼・揚げ物）":"")+'</div>';text+='<div class="confirmation-line">3時間後：'+(threeHours===""?"未入力":threeHours+" mg/dL")+'</div>';text+='<div class="confirmation-line">18時：トレシーバ 7単位</div>';text+='<div class="confirmation-line">夜：'+(dinner===""?"未入力":dinner+" mg/dL")+(dinnerSpecial?"（外食・丼・揚げ物）":"")+'</div>';text+='<div class="confirmation-line">就寝前：'+(bedtime===""?"未入力":bedtime+" mg/dL")+'</div>';
+ document.getElementById("confirmationText").innerHTML=text;button.parentNode.insertBefore(confirmation,button.nextSibling);confirmation.style.display="block";confirmation.scrollIntoView({behavior:"smooth",block:"center"})
+}));
+document.getElementById("calculateButton").addEventListener("click",function(){
+ if(!isCurrentPageDate())return;
+ const confirmation=document.getElementById("confirmation"),currentType=confirmation.dataset.currentType;
+ const currentInput=document.getElementById(currentType);
+ if(!currentInput||currentInput.value===""||!Number.isInteger(Number(currentInput.value))||Number(currentInput.value)<0||Number(currentInput.value)>1000){alert("血糖値を0～1000の整数で入力してください。");if(currentInput)currentInput.focus();return}
+ updateAll();
+ if(currentType==="threeHours"){
+  const now=new Date(),minutes=now.getHours()*60+now.getMinutes(),cutoff=16*60+30;
+  if(minutes>=cutoff){const bg=Number(document.getElementById("threeHours").value),result=document.getElementById("threeHoursResult"),doseElement=result.querySelector(".result-dose");if(doseElement){const dose=bg>=450?1:0;doseElement.textContent=dose+"単位"}}
+  const judgedDose=getDose("threeHours");
+  if(judgedDose!==null)localStorage.setItem("threeHoursJudgedDose",String(judgedDose));
+}
+ setLatestResult(currentType);localStorage.setItem(LATEST_KEY,currentType);
+ if(currentType==="threeHours"){const dose=getDose("threeHours");if(dose===0){const bg=document.getElementById("threeHours").value.trim();localStorage.setItem("threeHoursJudgedAt",Date.now().toString());const sentBgKey="threeHoursZeroSentBg",lastSentBg=localStorage.getItem(sentBgKey);if(lastSentBg!==bg){localStorage.setItem(sentBgKey,bg);sendLineNotification({type:"threeHours",bg:bg,dose:dose}).then(success=>{if(isCurrentPageDate()&&!success&&localStorage.getItem(sentBgKey)===bg)localStorage.removeItem(sentBgKey)})}}}
+ if(currentType==="bedtime"){const dose=getCurrentDose("bedtime");if(dose===0)sendDailySummaryForBedtimeZero();else localStorage.removeItem("bedtimeJudgedAt")}
+ saveData();applyCompletedState();confirmation.style.display="none"
+});
+function checkTresibaTime(){
+ if(!isCurrentPageDate())return;
+ const threeHoursResult=document.getElementById("threeHoursResult"),tresibaResult=document.querySelector("#tresibaResult");if(!threeHoursResult||!tresibaResult)return;if(!isThreeHoursStageFinished())return;const doseElement=threeHoursResult.querySelector(".result-dose");if(!doseElement||threeHoursResult.style.display==="none")return;const now=new Date(),minutes=now.getHours()*60+now.getMinutes(),transitionDate=localStorage.getItem("tresibaTransitionDate"),today=getToday();if(minutes<17*60+45||transitionDate===today)return;tresibaResult.classList.add("latest-result");localStorage.setItem(LATEST_KEY,"tresiba");localStorage.setItem("tresibaTransitionDate",today);const tresibaButton=document.querySelector('.injection-complete[data-type="tresiba"]');if(tresibaButton&&tresibaButton.dataset.completed!=="true")tresibaButton.style.display="block";tresibaResult.scrollIntoView({behavior:"smooth",block:"center"})
+}
+setInterval(function(){
+ if(!isCurrentPageDate())return;
+ checkTresibaTime();
+ if(isThreeHoursStageFinished()){const completed=getCompletedSteps();if(!completed.threeHours){saveCompletedStep("threeHours");const threeHoursInput=document.getElementById("threeHours");if(threeHoursInput){threeHoursInput.disabled=true;const item=threeHoursInput.closest(".item"),confirmButton=item?item.querySelector(".confirm-button"):null;if(confirmButton)confirmButton.disabled=true}localStorage.removeItem("threeHoursJudgedAt");applyCompletedState()}}
+ const bedtimeJudgedAt=localStorage.getItem("bedtimeJudgedAt");
+ if(bedtimeJudgedAt&&Date.now()-Number(bedtimeJudgedAt)>=120000){const input=document.getElementById("bedtime"),currentBg=input?input.value.trim():"",currentDose=getCurrentDose("bedtime"),sentBg=localStorage.getItem("dailySummaryZeroSentBedtimeBg"),sendingBg=localStorage.getItem("dailySummaryZeroSendingBedtimeBg");if(isCurrentPageDate()&&currentDose===0&&sentBg===currentBg&&!sendingBg&&savedDataMatchesDate(PAGE_DATE)){const completed=getCompletedSteps();if(!completed.bedtime)saveCompletedStep("bedtime");finishDayAndReset(PAGE_DATE);return}}
+},5000);
 checkTresibaTime();
-/* =========================
-   数値入力時に自動保存
-   入力変更時は古い判定結果を無効化
-   ========================= */
-
-document.querySelectorAll(
-    'input[type="number"]'
-).forEach(function(input) {
-
-    input.addEventListener("input", function() {
-        const type = input.id;
-        const result = document.getElementById(type + "Result");
-
-        // 入力変更時は古い判定結果を非表示にする
-        if (result) {
-            result.style.display = "none";
-            result.classList.remove("latest-result");
-        }
-
-        // 古い判定結果に基づく完了ボタンを隠す
-        const button = document.querySelector(
-            '.injection-complete[data-type="' + type + '"]'
-        );
-
-        if (button && button.dataset.completed !== "true") {
-            button.style.display = "none";
-        }
-
-        // 就寝前の0単位タイマーは、入力変更だけでは解除しない。
-        // 再判定時に現在の単位数を確認して処理する。
-
-        saveData();
-        applyCompletedState();
-    });
-
-});
-
-/* =========================
-   チェックボックス変更時に保存
-   ========================= */
-
-document.getElementById(
-    "lunchSpecial"
-).addEventListener(
-    "change",
-    saveData
-);
-
-
-document.getElementById(
-    "dinnerSpecial"
-).addEventListener(
-    "change",
-    saveData
-);
-
-
-/* =========================
-   ページを開いたとき
-   ========================= */
-
+document.querySelectorAll('input[type="number"]').forEach(input=>input.addEventListener("input",function(){if(!isCurrentPageDate())return;const type=input.id,result=document.getElementById(type+"Result");if(result){result.style.display="none";result.classList.remove("latest-result")}if(type==="threeHours"){localStorage.removeItem("threeHoursJudgedAt");localStorage.removeItem("threeHoursJudgedDose")}if(type==="bedtime")localStorage.removeItem("bedtimeJudgedAt");const button=document.querySelector('.injection-complete[data-type="'+type+'"]');if(button&&button.dataset.completed!=="true")button.style.display="none";saveData();applyCompletedState()}));
+document.getElementById("lunchSpecial").addEventListener("change",function(){if(isCurrentPageDate())saveData()});document.getElementById("dinnerSpecial").addEventListener("change",function(){if(isCurrentPageDate())saveData()});
 loadData();
-
-
-/* =========================
-   日付変更時の処理
-   就寝前が未完了なら前日のデータを保持
-   ========================= */
-
-setInterval(function() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if (!saved) {
-        return;
-    }
-
-    let data;
-
-    try {
-        data = JSON.parse(saved);
-    } catch (error) {
-        console.error("保存データの読み込みに失敗しました", error);
-        return;
-    }
-
-    if (data.date !== getToday()) {
-        const completed = getCompletedSteps();
-
-        if (!completed.bedtime) {
-    /* 前日の就寝前が未完了なら、データを保持 */
-    if (!localStorage.getItem("pendingBedtimeDate")) {
-        localStorage.setItem("pendingBedtimeDate", data.date);
-
-        /* 前日の就寝前を優先する画面に切り替える */
-        location.reload();
-    }
-    return;
+function checkDayRollover(){
+ const today=getToday();
+ if(!isCurrentPageDate()){
+  // 古いタブは今日のデータを消さない。新しい日付状態は新しいページ側が初期化する。
+  location.reload();
+  return;
+ }
+ const knownDay=localStorage.getItem(DAY_STATE_KEY);
+ if(knownDay&&knownDay!==today){
+  clearDailyStorage();
+  localStorage.setItem(DAY_STATE_KEY,today);
+  location.reload();
+  return;
+ }
+ const saved=localStorage.getItem(STORAGE_KEY);
+ if(saved){
+  try{
+   const data=JSON.parse(saved);
+   if(data.date&&data.date!==today){
+    clearDailyStorage();
+    localStorage.setItem(DAY_STATE_KEY,today);
+    location.reload();
+   }
+  }catch(error){
+   console.error("保存データの日付確認に失敗しました",error);
+   clearDailyStorage();
+   localStorage.setItem(DAY_STATE_KEY,today);
+   location.reload();
+  }
+ }
 }
-
-        /* 就寝前まで完了済みなら、旧データをリセット */
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem(LATEST_KEY);
-        localStorage.removeItem(COMPLETED_KEY);
-        localStorage.removeItem("tresibaTransitionDate");
-        localStorage.removeItem("threeHoursZeroSentBg");
-        localStorage.removeItem("threeHoursJudgedAt");
-        localStorage.removeItem("dailySummaryZeroSentBedtimeBg");
-        localStorage.removeItem("dailySummaryZeroSendingBedtimeBg");
-        localStorage.removeItem("bedtimeJudgedAt");
-        localStorage.removeItem("pendingBedtimeDate");
-
-        location.reload();
-    }
-}, 60000);
+setInterval(checkDayRollover,5000);
+window.addEventListener("pageshow",checkDayRollover);
 </script>
-
-
 </body>
 </html>
