@@ -1171,7 +1171,7 @@ async function sendLineNotification(data) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-
+console.log("LINE送信データ:", data);
                 body: JSON.stringify(data)
             }
         );
