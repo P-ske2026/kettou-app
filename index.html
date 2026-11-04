@@ -1855,7 +1855,8 @@ document.getElementById("calculateButton").addEventListener(
                     sendLineNotification({
                         type: "threeHours",
                         bg: bg,
-                        dose: dose
+                        dose: dose,
+                        completedAt: new Date().toISOString()
                     }).then(function(success) {
 
                         /* 送信失敗時は再送信できるよう記録を解除 */
