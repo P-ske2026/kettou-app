@@ -749,7 +749,31 @@ function saveCompletedStep(type) {
     completed[type] = true;
     localStorage.setItem(COMPLETED_KEY, JSON.stringify(completed));
 }
+const COMPLETION_TIMES_KEY = "completionTimes";
 
+function getCompletionTimes() {
+    try {
+        return JSON.parse(
+            localStorage.getItem(COMPLETION_TIMES_KEY) || "{}"
+        );
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveCompletionTime(type) {
+    const times = getCompletionTimes();
+    const completedAt = new Date().toISOString();
+
+    times[type] = completedAt;
+
+    localStorage.setItem(
+        COMPLETION_TIMES_KEY,
+        JSON.stringify(times)
+    );
+
+    return completedAt;
+}
 function completeInjection(type) {
 
 /* 就寝前0単位は、2分タイマーで自動完了する */
@@ -762,6 +786,7 @@ function completeInjection(type) {
        ========================= */
 
     saveCompletedStep(type);
+    const completedAt = saveCompletionTime(type);
 
 
     /* =========================
@@ -815,7 +840,8 @@ function completeInjection(type) {
         sendLineNotification({
             type: "morning",
             bg: document.getElementById("morning").value,
-            dose: getDose("morning")
+            dose: getDose("morning"),
+           completedAt: completedAt
         });
 
         const lunch =
@@ -840,7 +866,8 @@ function completeInjection(type) {
             bg: document.getElementById("lunch").value,
             dose: getDose("lunch"),
             special:
-                document.getElementById("lunchSpecial").checked
+                document.getElementById("lunchSpecial").checked,
+           completedAt: completedAt
         });
 
         const threeHours =
@@ -863,7 +890,8 @@ function completeInjection(type) {
         sendLineNotification({
             type: "threeHours",
             bg: document.getElementById("threeHours").value,
-            dose: getDose("threeHours")
+            dose: getDose("threeHours"),
+           completedAt: completedAt
         });
 
         const threeHoursResult =
@@ -905,7 +933,8 @@ function completeInjection(type) {
     else if (type === "tresiba") {
 
         sendLineNotification({
-            type: "tresiba"
+            type: "tresiba",
+           completedAt: completedAt
         });
 
         const tresibaResult =
@@ -937,7 +966,8 @@ function completeInjection(type) {
             bg: document.getElementById("dinner").value,
             dose: getDose("dinner"),
             special:
-                document.getElementById("dinnerSpecial").checked
+                document.getElementById("dinnerSpecial").checked,
+           completedAt: completedAt
         });
 
         const bedtime =
@@ -1253,39 +1283,52 @@ function isStepCompleted(type) {
 
 function buildDailySummaryPayload() {
 
+    const times = getCompletionTimes();
+
     return {
 
         type: "dailySummary",
 
         morning: {
             bg: document.getElementById("morning").value,
-            dose: getCurrentDose("morning")
+            dose: getCurrentDose("morning"),
+            completedAt: times.morning || null
         },
 
         lunch: {
             bg: document.getElementById("lunch").value,
             dose: getCurrentDose("lunch"),
-            special: document.getElementById("lunchSpecial").checked
+            special: document.getElementById("lunchSpecial").checked,
+            completedAt: times.lunch || null
         },
 
         threeHours: {
             bg: document.getElementById("threeHours").value,
-            dose: getCurrentDose("threeHours")
+            dose: getCurrentDose("threeHours"),
+            completedAt: times.threeHours || null
+        },
+
+        tresiba: {
+            completedAt: times.tresiba || null
         },
 
         dinner: {
             bg: document.getElementById("dinner").value,
             dose: getCurrentDose("dinner"),
-            special: document.getElementById("dinnerSpecial").checked
+            special: document.getElementById("dinnerSpecial").checked,
+            completedAt: times.dinner || null
         },
 
         bedtime: {
             bg: document.getElementById("bedtime").value,
-            dose: getCurrentDose("bedtime")
+            dose: getCurrentDose("bedtime"),
+            completedAt: times.bedtime || null
         }
     };
 }
 
+
+次の作業：0単位の自動完了処理
 /* =========================
    1日分の処理終了後にリセット
    ========================= */
@@ -1294,6 +1337,7 @@ function finishDayAndReset() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(LATEST_KEY);
     localStorage.removeItem(COMPLETED_KEY);
+    localStorage.removeItem(COMPLETION_TIMES_KEY);
     localStorage.removeItem("tresibaTransitionDate");
 
     localStorage.removeItem("threeHoursZeroSentBg");
@@ -1325,17 +1369,39 @@ async function sendDailySummaryForBedtimeZero() {
 
     // 0単位でなければ自動終了タイマーを解除
     if (dose !== 0) {
-        localStorage.removeItem(judgedAtKey);
-        return;
-    }
+    localStorage.removeItem(judgedAtKey);
+
+    const times = getCompletionTimes();
+    delete times.bedtime;
+
+    localStorage.setItem(
+        COMPLETION_TIMES_KEY,
+        JSON.stringify(times)
+    );
+
+    return;
+}
 
     // 最初の0単位判定時刻を保存
-    if (!localStorage.getItem(judgedAtKey)) {
+if (!localStorage.getItem(judgedAtKey)) {
+    const judgedAt = Date.now();
+
+    localStorage.setItem(
+        judgedAtKey,
+        judgedAt.toString()
+    );
+
+    const times = getCompletionTimes();
+
+    if (!times.bedtime) {
+        times.bedtime = new Date(judgedAt).toISOString();
+
         localStorage.setItem(
-            judgedAtKey,
-            Date.now().toString()
+            COMPLETION_TIMES_KEY,
+            JSON.stringify(times)
         );
     }
+}
 
     // 送信処理がすでに動いていれば、そちらに任せる
     if (localStorage.getItem(sendingKey)) {
@@ -1486,6 +1552,7 @@ function loadData() {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(LATEST_KEY);
         localStorage.removeItem(COMPLETED_KEY);
+        localStorage.removeItem(COMPLETION_TIMES_KEY);
         localStorage.removeItem("tresibaTransitionDate");
         localStorage.removeItem("threeHoursZeroSentBg");
         localStorage.removeItem("threeHoursJudgedAt");
@@ -1818,9 +1885,18 @@ document.getElementById("calculateButton").addEventListener(
         // 1単位以上、または計算対象外になったら
         // 0単位用の自動終了タイマーを解除
         localStorage.removeItem("bedtimeJudgedAt");
+
+        // 以前の0単位判定時刻も削除
+        const times = getCompletionTimes();
+        delete times.bedtime;
+
+        localStorage.setItem(
+            COMPLETION_TIMES_KEY,
+            JSON.stringify(times)
+        );
     }
 }
-
+      
        /* 入力内容を保存 */
 saveData();
 
@@ -1929,6 +2005,7 @@ setInterval(function() {
         if (!completed.threeHours) {
 
             saveCompletedStep("threeHours");
+            saveCompletionTime("threeHours");
 
             
             const threeHoursInput =
@@ -2113,6 +2190,7 @@ setInterval(function() {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(LATEST_KEY);
         localStorage.removeItem(COMPLETED_KEY);
+        localStorage.removeItem(COMPLETION_TIMES_KEY);
         localStorage.removeItem("tresibaTransitionDate");
         localStorage.removeItem("threeHoursZeroSentBg");
         localStorage.removeItem("threeHoursJudgedAt");
