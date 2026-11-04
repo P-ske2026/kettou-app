@@ -1163,6 +1163,8 @@ async function sendLineNotification(data) {
 
     try {
 
+        console.log("LINE送信データ:", data);
+
         const response = await fetch(
             "https://kettou-line.yts-bloom-style.workers.dev/notify",
             {
@@ -1171,7 +1173,7 @@ async function sendLineNotification(data) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-console.log("LINE送信データ:", data);
+
                 body: JSON.stringify(data)
             }
         );
